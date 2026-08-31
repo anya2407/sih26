@@ -8,11 +8,23 @@ const HeritageContext = createContext(null);
 
 export const HeritageProvider = ({ children }) => {
   // Location & Onboarding State
-  const [isOnboarded, setIsOnboarded] = useState(() => {
-    return localStorage.getItem('virasat_onboarded') === 'true';
+  const [selectedCityId, setSelectedCityId] = useState(() => {
+    const savedCityId = localStorage.getItem('virasat_selected_city');
+    return CITIES_DATA.some(city => city.id === savedCityId) ? savedCityId : null;
   });
-  const [selectedCityId, setSelectedCityId] = useState('jaipur');
-  const [isLocationPickerOpen, setIsLocationPickerOpen] = useState(false);
+  const [isOnboarded, setIsOnboarded] = useState(() => {
+    const savedCityId = localStorage.getItem('virasat_selected_city');
+    const hasValidSavedCity = CITIES_DATA.some(city => city.id === savedCityId);
+
+    // Older builds persisted only this flag, which made a stale value reopen the
+    // Jaipur dashboard. A completed onboarding now requires a saved destination.
+    return localStorage.getItem('virasat_onboarded') === 'true' && hasValidSavedCity;
+  });
+  const [isLocationPickerOpen, setIsLocationPickerOpen] = useState(() => {
+    const savedCityId = localStorage.getItem('virasat_selected_city');
+    const hasValidSavedCity = CITIES_DATA.some(city => city.id === savedCityId);
+    return !(localStorage.getItem('virasat_onboarded') === 'true' && hasValidSavedCity);
+  });
 
   // Navigation State
   const [activeTab, setActiveTab] = useState('explore'); // 'explore' | 'guide' | 'community' | 'recommendations' | 'culture' | 'map' | 'profile'
@@ -92,6 +104,12 @@ export const HeritageProvider = ({ children }) => {
   }, [isOnboarded]);
 
   useEffect(() => {
+    if (selectedCityId) {
+      localStorage.setItem('virasat_selected_city', selectedCityId);
+    }
+  }, [selectedCityId]);
+
+  useEffect(() => {
     localStorage.setItem('virasat_saved_heritage', JSON.stringify(savedHeritageIds));
   }, [savedHeritageIds]);
 
@@ -118,7 +136,8 @@ export const HeritageProvider = ({ children }) => {
   }, []);
 
   // Complete Onboarding
-  const completeOnboarding = (cityId = 'jaipur') => {
+  const completeOnboarding = (cityId) => {
+    if (!CITIES_DATA.some(city => city.id === cityId)) return;
     setSelectedCityId(cityId);
     setIsOnboarded(true);
     showToast(`Welcome to ${cityId.charAt(0).toUpperCase() + cityId.slice(1)}. Exploring cultural heritage around you.`, 'success');

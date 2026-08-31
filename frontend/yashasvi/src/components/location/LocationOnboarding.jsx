@@ -5,11 +5,11 @@ import { MapPin, Navigation, Map, Search, Sparkles, ArrowRight, ShieldCheck } fr
 
 export const LocationOnboarding = () => {
   const { completeOnboarding, setIsLocationPickerOpen } = useHeritage();
-  const [selectedCityId, setSelectedCityId] = useState('jaipur');
+  const [selectedCityId, setSelectedCityId] = useState(null);
   const [isLocating, setIsLocating] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
 
-  const selectedCity = CITIES_DATA.find(c => c.id === selectedCityId) || CITIES_DATA[0];
+  const selectedCity = CITIES_DATA.find(c => c.id === selectedCityId);
 
   const filteredCities = CITIES_DATA.filter(c => 
     c.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
@@ -26,7 +26,7 @@ export const LocationOnboarding = () => {
   };
 
   const handleStartExploring = () => {
-    completeOnboarding(selectedCityId);
+    if (selectedCityId) completeOnboarding(selectedCityId);
   };
 
   return (
@@ -120,7 +120,7 @@ export const LocationOnboarding = () => {
           </div>
 
           {/* Selected City Context Snapshot */}
-          <div className="p-4 bg-heritage-bg/70 rounded-2xl border border-heritage-border/80 mb-6 flex items-start gap-4">
+          {selectedCity ? <div className="p-4 bg-heritage-bg/70 rounded-2xl border border-heritage-border/80 mb-6 flex items-start gap-4">
             <img
               src={selectedCity.coverImage}
               alt={selectedCity.name}
@@ -138,7 +138,7 @@ export const LocationOnboarding = () => {
               <p className="text-xs text-heritage-textMuted line-clamp-1 mt-0.5">
                 {selectedCity.tagline}
               </p>
-              <div className="mt-2 flex items-center gap-3 text-[11px] text-heritage-textDark font-medium">
+              <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-[11px] text-heritage-textDark font-medium">
                 <span>📍 {selectedCity.heritageCount} Monuments</span>
                 <span>•</span>
                 <span>🎨 {selectedCity.cultureCount} Living Crafts</span>
@@ -146,7 +146,11 @@ export const LocationOnboarding = () => {
                 <span>📜 {selectedCity.storiesCount} Stories</span>
               </div>
             </div>
-          </div>
+          </div> : (
+            <div className="p-4 bg-heritage-bg/70 rounded-2xl border border-dashed border-heritage-border/80 mb-6 text-xs text-heritage-textMuted">
+              Choose a cultural center above, or select one on the map, to begin your heritage journey.
+            </div>
+          )}
 
           {/* Dual Action Buttons: Use My Location & Choose on Map */}
           <div className="grid grid-cols-2 gap-3 mb-6">
@@ -171,9 +175,10 @@ export const LocationOnboarding = () => {
           {/* Primary CTA */}
           <button
             onClick={handleStartExploring}
-            className="w-full py-4 px-6 bg-heritage-red hover:bg-heritage-deepRed text-white font-semibold text-sm rounded-xl shadow-card hover:shadow-card-hover transition-all flex items-center justify-center gap-2 group"
+            disabled={!selectedCity}
+            className="w-full py-4 px-6 bg-heritage-red hover:bg-heritage-deepRed disabled:bg-heritage-red/40 disabled:cursor-not-allowed text-white font-semibold text-sm rounded-xl shadow-card hover:shadow-card-hover transition-all flex items-center justify-center gap-2 group"
           >
-            <span>Explore from {selectedCity.name}</span>
+            <span>{selectedCity ? `Explore from ${selectedCity.name}` : 'Select a destination to explore'}</span>
             <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
           </button>
         </div>

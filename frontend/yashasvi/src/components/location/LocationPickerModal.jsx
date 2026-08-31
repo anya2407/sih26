@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useHeritage } from '../../context/HeritageContext';
 import { CITIES_DATA } from '../../data/citiesData';
 import { MOCK_HERITAGE } from '../../data/mockHeritage';
@@ -15,13 +15,18 @@ export const LocationPickerModal = () => {
     isOnboarded
   } = useHeritage();
 
-  const [activeCityId, setActiveCityId] = useState(selectedCityId || 'jaipur');
+  const [activeCityId, setActiveCityId] = useState(selectedCityId || null);
   const [mapSearch, setMapSearch] = useState('');
+
+  // Keep the simulated map in sync when the home screen chooses a city first.
+  useEffect(() => {
+    if (isLocationPickerOpen) setActiveCityId(selectedCityId || null);
+  }, [isLocationPickerOpen, selectedCityId]);
 
   if (!isLocationPickerOpen) return null;
 
-  const activeCity = CITIES_DATA.find(c => c.id === activeCityId) || CITIES_DATA[0];
-  const cityMonuments = MOCK_HERITAGE.filter(m => m.cityId === activeCity.id);
+  const activeCity = CITIES_DATA.find(c => c.id === activeCityId);
+  const cityMonuments = activeCity ? MOCK_HERITAGE.filter(m => m.cityId === activeCity.id) : [];
 
   const filteredCities = CITIES_DATA.filter(c => 
     c.name.toLowerCase().includes(mapSearch.toLowerCase()) || 
@@ -29,6 +34,7 @@ export const LocationPickerModal = () => {
   );
 
   const handleConfirmLocation = () => {
+    if (!activeCity) return;
     if (!isOnboarded) {
       completeOnboarding(activeCity.id);
     } else {
@@ -44,10 +50,10 @@ export const LocationPickerModal = () => {
         {/* Left Side: Interactive Map Simulation Area */}
         <div className="relative flex-1 bg-[#F4EFE6] min-h-[300px] flex flex-col justify-between overflow-hidden">
           {/* Subtle Top Map Control Bar */}
-          <div className="absolute top-4 left-4 right-4 z-10 flex items-center justify-between pointer-events-auto">
-            <div className="flex items-center gap-2 bg-white/95 backdrop-blur-md px-3.5 py-2 rounded-xl shadow-card border border-heritage-border text-xs font-semibold text-heritage-textDark">
+          <div className="absolute top-4 left-4 right-4 z-10 flex items-start justify-between gap-3 pointer-events-auto">
+            <div className="flex max-w-[calc(100%-3rem)] items-center gap-2 bg-white/95 backdrop-blur-md px-3.5 py-2 rounded-xl shadow-card border border-heritage-border text-xs font-semibold text-heritage-textDark">
               <Compass className="w-4 h-4 text-heritage-red animate-pulse" />
-              <span>Interactive Cultural Cartography</span>
+              <span className="min-w-0 leading-snug">Interactive Cultural Cartography</span>
             </div>
 
             <button
@@ -75,7 +81,7 @@ export const LocationPickerModal = () => {
             </svg>
 
             {/* Central Pin Pulse */}
-            <div className="absolute flex flex-col items-center pointer-events-auto">
+            {activeCity && <div className="absolute flex flex-col items-center pointer-events-auto">
               <div className="relative">
                 <div className="w-12 h-12 rounded-full bg-heritage-red/20 animate-ping absolute -top-1 -left-1" />
                 <div className="w-10 h-10 rounded-full bg-heritage-red text-white flex items-center justify-center shadow-glow-red font-bold text-sm relative z-10 border-2 border-white">
@@ -85,7 +91,7 @@ export const LocationPickerModal = () => {
               <div className="mt-2 bg-white/95 backdrop-blur-md px-3 py-1 rounded-full shadow-card border border-heritage-border text-xs font-bold text-heritage-textDark whitespace-nowrap">
                 {activeCity.name} Hub · {activeCity.heritageCount} Sites
               </div>
-            </div>
+            </div>}
 
             {/* Floating Marker Pins for Selected City */}
             {cityMonuments.slice(0, 3).map((mon, index) => {
@@ -109,14 +115,14 @@ export const LocationPickerModal = () => {
           </div>
 
           {/* Bottom Map Info Strip */}
-          <div className="relative z-10 p-4 bg-gradient-to-t from-[#EFE8DC] to-transparent flex items-center justify-between text-xs text-heritage-textMuted">
-            <span className="flex items-center gap-1.5 font-medium">
+          <div className="absolute inset-x-0 bottom-0 z-10 p-4 pt-10 bg-gradient-to-t from-[#EFE8DC] via-[#EFE8DC]/90 to-transparent flex flex-col items-start gap-2 text-xs text-heritage-textMuted sm:flex-row sm:items-center sm:justify-between">
+            <span className="flex shrink-0 items-center gap-1.5 font-medium">
               <Layers className="w-3.5 h-3.5 text-heritage-red" />
               Radius: 15 km Cultural Zone
             </span>
-            <span className="bg-white/80 px-2 py-0.5 rounded border border-heritage-border text-[10px] font-mono">
+            {activeCity && <span className="bg-white/80 px-2 py-0.5 rounded border border-heritage-border text-[10px] font-mono">
               GPS: {activeCity.coordinates.lat.toFixed(4)}° N, {activeCity.coordinates.lng.toFixed(4)}° E
-            </span>
+            </span>}
           </div>
         </div>
 
@@ -205,10 +211,10 @@ export const LocationPickerModal = () => {
                 </Badge>
               </div>
               <h4 className="font-editorial-heading font-bold text-base text-heritage-textDark mt-1">
-                {activeCity.name}, {activeCity.state}
+                {activeCity ? `${activeCity.name}, ${activeCity.state}` : 'No destination selected'}
               </h4>
               <p className="text-xs text-heritage-textMuted mt-1 leading-relaxed">
-                We found <strong className="text-heritage-textDark">{activeCity.heritageCount} cultural experiences</strong>, {activeCity.cultureCount} artisan traditions, and {activeCity.storiesCount} community stories around you.
+                {activeCity ? <>We found <strong className="text-heritage-textDark">{activeCity.heritageCount} cultural experiences</strong>, {activeCity.cultureCount} artisan traditions, and {activeCity.storiesCount} community stories around you.</> : 'Select a heritage center to view its cultural experiences, artisan traditions, and community stories.'}
               </p>
             </div>
           </div>
@@ -217,9 +223,10 @@ export const LocationPickerModal = () => {
           <div className="pt-4 border-t border-heritage-border mt-4">
             <button
               onClick={handleConfirmLocation}
-              className="w-full py-3.5 px-4 bg-heritage-red hover:bg-heritage-deepRed text-white font-semibold text-xs rounded-xl shadow-card transition-all flex items-center justify-center gap-2 group"
+              disabled={!activeCity}
+              className="w-full py-3.5 px-4 bg-heritage-red hover:bg-heritage-deepRed disabled:bg-heritage-red/40 disabled:cursor-not-allowed text-white font-semibold text-xs rounded-xl shadow-card transition-all flex items-center justify-center gap-2 group"
             >
-              <span>Begin Exploring {activeCity.name}</span>
+              <span>{activeCity ? `Begin Exploring ${activeCity.name}` : 'Select a destination to begin'}</span>
               <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
             </button>
           </div>
