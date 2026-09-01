@@ -1,7 +1,6 @@
 import React from 'react';
 import { useHeritage } from '../../context/HeritageContext';
-import { Compass, Headphones, Users, Sparkles, Layers, Map as MapIcon, Bookmark } from 'lucide-react';
-import { AudioWave } from '../common/AudioWave';
+import { Compass, Headphones, Users } from 'lucide-react';
 
 export const MobileNav = () => {
   const { activeTab, setActiveTab, guideState, isDetailViewOpen, closeMonumentDetail } = useHeritage();
@@ -9,10 +8,7 @@ export const MobileNav = () => {
   const navItems = [
     { id: 'explore', label: 'Explore', icon: Compass },
     { id: 'guide', label: 'AI Guide', icon: Headphones, showWave: guideState.isPlaying },
-    { id: 'community', label: 'Community', icon: Users },
-    { id: 'recommendations', label: 'Curated', icon: Sparkles },
-    { id: 'map', label: 'Map', icon: MapIcon },
-    { id: 'profile', label: 'Saved', icon: Bookmark }
+    { id: 'community', label: 'Community', icon: Users }
   ];
 
   const handleNavClick = (tabId) => {
@@ -23,7 +19,7 @@ export const MobileNav = () => {
   };
 
   return (
-    <div className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-md border-t border-heritage-border px-2 py-2 flex items-center justify-around shadow-modal">
+    <div className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-md border-t border-heritage-border px-3 py-2 flex items-center justify-around shadow-modal">
       {navItems.map((item) => {
         const Icon = item.icon;
         const isActive = activeTab === item.id && !isDetailViewOpen;
@@ -32,7 +28,7 @@ export const MobileNav = () => {
           <button
             key={item.id}
             onClick={() => handleNavClick(item.id)}
-            className={`flex flex-col items-center justify-center py-1 px-2 rounded-lg transition-colors relative ${
+            className={`flex flex-1 flex-col items-center justify-center py-1 px-2 rounded-lg transition-colors relative ${
               isActive ? 'text-heritage-red font-semibold' : 'text-heritage-textMuted hover:text-heritage-textDark'
             }`}
           >

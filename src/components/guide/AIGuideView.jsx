@@ -15,7 +15,6 @@ import {
   BookOpen, 
   Info,
   Mic,
-  ArrowRight,
   ShieldCheck
 } from 'lucide-react';
 import { Badge } from '../common/Badge';
@@ -25,7 +24,6 @@ export const AIGuideView = () => {
     guideState, 
     setGuideState, 
     toggleAudioPlayback, 
-    openMonumentDetail,
     showToast 
   } = useHeritage();
 
@@ -108,46 +106,10 @@ export const AIGuideView = () => {
           </p>
         </div>
 
-        <button
-          onClick={() => openMonumentDetail(monument.id)}
-          className="px-4 py-2.5 bg-heritage-bg hover:bg-heritage-beige border border-heritage-border text-heritage-textDark text-xs font-semibold rounded-xl flex items-center gap-2 self-start md:self-auto transition-colors"
-        >
-          <span>Monument Dossier</span>
-          <ArrowRight className="w-3.5 h-3.5 text-heritage-red" />
-        </button>
       </section>
 
-      {/* 2. Point of Interest Navigation Bar */}
-      <section className="bg-white p-4 rounded-2xl border border-heritage-border shadow-subtle">
-        <p className="text-[11px] font-bold text-heritage-textMuted uppercase tracking-wider mb-2.5 px-2">
-          Points of Interest Along the Heritage Route:
-        </p>
-
-        <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none">
-          {monument.pointsOfInterest?.map((poi) => {
-            const isSelected = selectedPoiId === poi.id;
-            return (
-              <button
-                key={poi.id}
-                onClick={() => handleSelectPoi(poi)}
-                className={`flex-shrink-0 px-4 py-2 rounded-xl text-xs font-semibold transition-all border ${
-                  isSelected
-                    ? 'bg-heritage-red text-white border-heritage-red shadow-subtle'
-                    : 'bg-heritage-bg hover:bg-heritage-beige text-heritage-textDark border-heritage-border'
-                }`}
-              >
-                <span>{poi.name}</span>
-                <span className={`block text-[9px] font-mono mt-0.5 ${isSelected ? 'text-white/80' : 'text-heritage-textMuted'}`}>
-                  {poi.audioTime}
-                </span>
-              </button>
-            );
-          })}
-        </div>
-      </section>
-
-      {/* 3. Central Voice Visualizer & Interactive Narration Player */}
-      <section className="bg-white p-6 sm:p-10 rounded-3xl border border-heritage-border shadow-card text-center relative overflow-hidden">
+      {/* 2. Central Voice Visualizer & Interactive Narration Player */}
+      <section className="bg-white min-h-[calc(100vh-11rem)] p-6 sm:p-10 rounded-3xl border border-heritage-border shadow-card text-center relative overflow-hidden flex flex-col justify-center">
         {/* Subtle decorative radial background */}
         <div className="absolute inset-0 opacity-40 bg-[radial-gradient(#E8E3DD_1px,transparent_1px)] [background-size:20px_20px] pointer-events-none" />
 
@@ -246,6 +208,35 @@ export const AIGuideView = () => {
           >
             {guideState.isPlaying ? 'Pause Narration' : 'Continue Listening'}
           </button>
+        </div>
+      </section>
+
+      {/* 3. Point of Interest Navigation Bar */}
+      <section className="bg-white p-4 rounded-2xl border border-heritage-border shadow-subtle">
+        <p className="text-[11px] font-bold text-heritage-textMuted uppercase tracking-wider mb-2.5 px-2">
+          Points of Interest Along the Heritage Route:
+        </p>
+
+        <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none">
+          {monument.pointsOfInterest?.map((poi) => {
+            const isSelected = selectedPoiId === poi.id;
+            return (
+              <button
+                key={poi.id}
+                onClick={() => handleSelectPoi(poi)}
+                className={`flex-shrink-0 px-4 py-2 rounded-xl text-xs font-semibold transition-all border ${
+                  isSelected
+                    ? 'bg-heritage-red text-white border-heritage-red shadow-subtle'
+                    : 'bg-heritage-bg hover:bg-heritage-beige text-heritage-textDark border-heritage-border'
+                }`}
+              >
+                <span>{poi.name}</span>
+                <span className={`block text-[9px] font-mono mt-0.5 ${isSelected ? 'text-white/80' : 'text-heritage-textMuted'}`}>
+                  {poi.audioTime}
+                </span>
+              </button>
+            );
+          })}
         </div>
       </section>
 

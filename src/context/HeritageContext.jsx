@@ -27,7 +27,7 @@ export const HeritageProvider = ({ children }) => {
   });
 
   // Navigation State
-  const [activeTab, setActiveTab] = useState('explore'); // 'explore' | 'guide' | 'community' | 'recommendations' | 'culture' | 'map' | 'profile'
+  const [activeTab, setActiveTab] = useState('guide'); // 'explore' | 'guide' | 'community' | 'culture' | 'map' | 'profile'
   
   // Detail Views & Modals
   const [selectedMonumentId, setSelectedMonumentId] = useState('amber-fort');
@@ -60,6 +60,15 @@ export const HeritageProvider = ({ children }) => {
       return saved ? JSON.parse(saved) : ['story-1'];
     } catch {
       return ['story-1'];
+    }
+  });
+
+  const [downvotedStoryIds, setDownvotedStoryIds] = useState(() => {
+    try {
+      const saved = localStorage.getItem('virasat_downvoted_stories');
+      return saved ? JSON.parse(saved) : [];
+    } catch {
+      return [];
     }
   });
 
@@ -120,6 +129,10 @@ export const HeritageProvider = ({ children }) => {
   useEffect(() => {
     localStorage.setItem('virasat_upvoted_stories', JSON.stringify(upvotedStoryIds));
   }, [upvotedStoryIds]);
+
+  useEffect(() => {
+    localStorage.setItem('virasat_downvoted_stories', JSON.stringify(downvotedStoryIds));
+  }, [downvotedStoryIds]);
 
   // Current City Object
   const currentCity = CITIES_DATA.find(c => c.id === selectedCityId) || CITIES_DATA[0];
@@ -278,9 +291,23 @@ export const HeritageProvider = ({ children }) => {
       if (isUpvoted) {
         return prev.filter(item => item !== id);
       } else {
+        setDownvotedStoryIds(downvotes => downvotes.filter(item => item !== id));
         showToast('Marked story as culturally helpful', 'success');
         return [...prev, id];
       }
+    });
+  };
+
+  const toggleDownvoteStory = (id) => {
+    setDownvotedStoryIds(prev => {
+      const isDownvoted = prev.includes(id);
+      if (isDownvoted) {
+        return prev.filter(item => item !== id);
+      }
+
+      setUpvotedStoryIds(upvotes => upvotes.filter(item => item !== id));
+      showToast('Marked story as less helpful', 'info');
+      return [...prev, id];
     });
   };
 
@@ -315,9 +342,11 @@ export const HeritageProvider = ({ children }) => {
         savedHeritageIds,
         savedStoryIds,
         upvotedStoryIds,
+        downvotedStoryIds,
         toggleSaveHeritage,
         toggleSaveStory,
         toggleUpvoteStory,
+        toggleDownvoteStory,
         userPassport,
 
         // AI Guide

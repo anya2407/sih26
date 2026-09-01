@@ -16,6 +16,7 @@ import {
   BookOpen, 
   Layers, 
   Calendar,
+  Search,
   ShieldCheck
 } from 'lucide-react';
 import { Badge } from '../common/Badge';
@@ -26,7 +27,8 @@ export const ExploreDashboard = () => {
     setIsLocationPickerOpen, 
     setActiveTab, 
     startAudioGuide, 
-    openMonumentDetail 
+    openMonumentDetail,
+    setIsSearchModalOpen
   } = useHeritage();
 
   // Get current hour for dynamic greeting
@@ -72,6 +74,14 @@ export const ExploreDashboard = () => {
             <p className="mt-3 text-sm sm:text-base text-heritage-textMuted leading-relaxed">
               {currentCity.description}
             </p>
+
+            <button
+              onClick={() => setIsSearchModalOpen(true)}
+              className="mt-5 inline-flex items-center gap-2 px-4 py-2.5 bg-heritage-bg hover:bg-heritage-beige border border-heritage-border rounded-xl text-xs font-semibold text-heritage-textDark transition-colors"
+            >
+              <Search className="w-4 h-4 text-heritage-red" />
+              <span>Search heritage, culture & stories</span>
+            </button>
 
             {/* Quick stats pills */}
             <div className="mt-5 flex flex-wrap items-center gap-2 sm:gap-4 text-xs font-medium text-heritage-textDark">
@@ -263,20 +273,14 @@ export const ExploreDashboard = () => {
             </h2>
           </div>
 
-          <button
-            onClick={() => setActiveTab('recommendations')}
-            className="flex items-center gap-1.5 text-xs font-semibold text-heritage-red hover:underline"
-          >
-            <span>View all events</span>
-            <ArrowRight className="w-3.5 h-3.5" />
-          </button>
+          <span className="text-xs font-semibold text-heritage-textMuted">Local highlights</span>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
           {events.map(event => (
             <EventCard key={event.id} event={event} />
           ))}
-          {/* Fallback extra curated card if fewer events */}
+          {/* Fallback local highlight if fewer events */}
           {cityRecommendations.slice(0, 1).map(rec => (
             <EventCard key={rec.id} event={rec} />
           ))}

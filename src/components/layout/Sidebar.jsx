@@ -4,10 +4,8 @@ import {
   Compass, 
   Headphones, 
   Users, 
-  Sparkles, 
   Layers, 
   Map as MapIcon, 
-  Bookmark, 
   MapPin, 
   ChevronRight,
   Search
@@ -21,8 +19,6 @@ export const Sidebar = () => {
     currentCity, 
     setIsLocationPickerOpen,
     guideState,
-    savedHeritageIds,
-    savedStoryIds,
     userPassport,
     setIsSearchModalOpen,
     isDetailViewOpen,
@@ -39,15 +35,8 @@ export const Sidebar = () => {
       showWave: guideState.isPlaying
     },
     { id: 'community', label: 'Community', icon: Users },
-    { id: 'recommendations', label: 'Curated', icon: Sparkles },
     { id: 'culture', label: 'Cultural Mosaic', icon: Layers },
-    { id: 'map', label: 'Discovery Map', icon: MapIcon },
-    { 
-      id: 'profile', 
-      label: 'Saved & Passport', 
-      icon: Bookmark,
-      count: savedHeritageIds.length + savedStoryIds.length
-    }
+    { id: 'map', label: 'Discovery Map', icon: MapIcon }
   ];
 
   const handleNavClick = (tabId) => {
@@ -78,12 +67,15 @@ export const Sidebar = () => {
 
           {/* Quick Search Bar Trigger */}
           <button
-            onClick={() => setIsSearchModalOpen(true)}
+            onClick={() => {
+              handleNavClick('explore');
+              setIsSearchModalOpen(true);
+            }}
             className="w-full mt-5 flex items-center justify-between px-3 py-2 bg-heritage-bg hover:bg-heritage-beige border border-heritage-border rounded-lg text-left text-xs text-heritage-textMuted transition-colors"
           >
             <span className="flex items-center gap-2">
               <Search className="w-3.5 h-3.5 text-heritage-red" />
-              Search culture, sites...
+              Search in Explore...
             </span>
             <kbd className="text-[10px] bg-white px-1.5 py-0.5 rounded border border-heritage-border font-mono text-heritage-textMuted">
               ⌘K

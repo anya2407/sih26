@@ -45,9 +45,7 @@ export const CreateStoryModal = ({ isOpen, onClose, onStoryCreated }) => {
       content: content.trim(),
       image: 'https://images.unsplash.com/photo-1599661046289-e31897846e41?auto=format&fit=crop&w=1200&q=80',
       upvotes: 1,
-      commentsCount: 0,
-      savedCount: 1,
-      comments: []
+      savedCount: 1
     };
 
     onStoryCreated(newStory);

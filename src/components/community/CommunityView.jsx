@@ -1,12 +1,11 @@
 import React, { useState } from 'react';
 import { useHeritage } from '../../context/HeritageContext';
 import { MOCK_STORIES } from '../../data/mockStories';
-import { CommentDrawer } from './CommentDrawer';
 import { CreateStoryModal } from './CreateStoryModal';
 import { 
   Bookmark, 
   ArrowBigUp, 
-  MessageSquare, 
+  ArrowBigDown,
   Share2, 
   Play, 
   Pause, 
@@ -24,12 +23,13 @@ export const CommunityView = () => {
     toggleSaveStory, 
     upvotedStoryIds, 
     toggleUpvoteStory,
+    downvotedStoryIds,
+    toggleDownvoteStory,
     showToast 
   } = useHeritage();
 
   const [stories, setStories] = useState(MOCK_STORIES);
   const [selectedFilter, setSelectedFilter] = useState('All');
-  const [activeStoryForComments, setActiveStoryForComments] = useState(null);
   const [isCreateStoryOpen, setIsCreateStoryOpen] = useState(false);
   const [playingAudioStoryId, setPlayingAudioStoryId] = useState(null);
 
@@ -42,9 +42,16 @@ export const CommunityView = () => {
     'Historical Photograph'
   ];
 
-  const filteredStories = selectedFilter === 'All'
+  const filteredStories = (selectedFilter === 'All'
     ? stories
-    : stories.filter(s => s.type === selectedFilter);
+    : stories.filter(s => s.type === selectedFilter))
+    .slice()
+    .sort((a, b) => {
+      const score = (story) => story.upvotes
+        + (upvotedStoryIds.includes(story.id) ? 1 : 0)
+        - (downvotedStoryIds.includes(story.id) ? 1 : 0);
+      return score(b) - score(a);
+    });
 
   const handleToggleAudio = (storyId) => {
     if (playingAudioStoryId === storyId) {
@@ -129,7 +136,9 @@ export const CommunityView = () => {
         {filteredStories.map((story) => {
           const isSaved = savedStoryIds.includes(story.id);
           const isUpvoted = upvotedStoryIds.includes(story.id);
+          const isDownvoted = downvotedStoryIds.includes(story.id);
           const isAudioPlaying = playingAudioStoryId === story.id;
+          const voteScore = story.upvotes + (isUpvoted ? 1 : 0) - (isDownvoted ? 1 : 0);
 
           return (
             <article
@@ -232,16 +241,20 @@ export const CommunityView = () => {
                     }`}
                   >
                     <ArrowBigUp className={`w-4 h-4 ${isUpvoted ? 'fill-heritage-red text-heritage-red' : ''}`} />
-                    <span>Helpful ({story.upvotes + (isUpvoted ? 1 : 0)})</span>
+                    <span>Upvote ({voteScore})</span>
                   </button>
 
-                  {/* Comment */}
+                  {/* Downvote */}
                   <button
-                    onClick={() => setActiveStoryForComments(story)}
-                    className="flex items-center gap-1.5 px-3 py-1.5 bg-heritage-bg hover:bg-heritage-beige text-heritage-textDark rounded-xl border border-heritage-border transition-colors"
+                    onClick={() => toggleDownvoteStory(story.id)}
+                    className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl border transition-all ${
+                      isDownvoted
+                        ? 'bg-heritage-textDark text-white border-heritage-textDark font-bold'
+                        : 'bg-heritage-bg hover:bg-heritage-beige text-heritage-textDark border-heritage-border'
+                    }`}
                   >
-                    <MessageSquare className="w-3.5 h-3.5 text-heritage-textMuted" />
-                    <span>Comments ({story.commentsCount || story.comments?.length || 0})</span>
+                    <ArrowBigDown className={`w-4 h-4 ${isDownvoted ? 'fill-current' : ''}`} />
+                    <span>Downvote</span>
                   </button>
                 </div>
 
@@ -274,13 +287,6 @@ export const CommunityView = () => {
           );
         })}
       </div>
-
-      {/* Modals & Drawers */}
-      <CommentDrawer
-        isOpen={!!activeStoryForComments}
-        onClose={() => setActiveStoryForComments(null)}
-        story={activeStoryForComments}
-      />
 
       <CreateStoryModal
         isOpen={isCreateStoryOpen}

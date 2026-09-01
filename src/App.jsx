@@ -11,7 +11,6 @@ import { AIGuideView } from './components/guide/AIGuideView';
 import { MiniPlayer } from './components/guide/MiniPlayer';
 import { HeritageDetailView } from './components/detail/HeritageDetailView';
 import { CommunityView } from './components/community/CommunityView';
-import { RecommendationsView } from './components/recommendations/RecommendationsView';
 import { CultureExplorerView } from './components/culture/CultureExplorerView';
 import { HeritageMapView } from './components/map/HeritageMapView';
 import { UserProfileView } from './components/profile/UserProfileView';
@@ -48,8 +47,6 @@ const MainApp = () => {
         return <AIGuideView />;
       case 'community':
         return <CommunityView />;
-      case 'recommendations':
-        return <RecommendationsView />;
       case 'culture':
         return <CultureExplorerView />;
       case 'map':

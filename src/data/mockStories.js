@@ -18,7 +18,6 @@ export const MOCK_STORIES = [
     content: 'Many visitors ask why Jaipur Blue Pottery cannot be shaped on a traditional potter’s wheel like red clay. The secret lies in our recipe: we mix 80% ground quartz stone, 10% cullet glass powder, 5% gum, and 5% Multani Mitti (Fuller’s Earth). Because there is no plastic clay, each vessel must be pressed into handmade open-faced terracotta molds and left to dry slowly in the desert sun for 14 days before the master painter touches it with cobalt and copper oxide brushes.',
     image: 'https://images.unsplash.com/photo-1578749556568-bc2c40e68b61?auto=format&fit=crop&w=1200&q=80',
     upvotes: 284,
-    commentsCount: 38,
     savedCount: 94,
     comments: [
       { id: 'c1', user: 'Ananya Roy', text: 'Visited your workshop last autumn! The turquoise glaze bowls we bought are our family’s prized centerpiece.', time: '2 days ago' },
@@ -44,7 +43,6 @@ export const MOCK_STORIES = [
     content: 'My great-grandfather served as a royal guard at the Suraj Pol entrance. He used to tell us that beneath the courtyard of Jaleb Chowk, a vaulted secret tunnel branches into three paths: one leads directly up the rocky ridge into the arsenal of Jaigarh Fort, one to the royal stepwell for freshwater supply, and the third was a decoy filled with stone traps. While the upper kilometer of the Jaigarh tunnel is now open to visitors, local folklore insists the deepest vault still holds royal armor that was never cataloged.',
     image: 'https://images.unsplash.com/photo-1599661046289-e31897846e41?auto=format&fit=crop&w=1200&q=80',
     upvotes: 412,
-    commentsCount: 52,
     savedCount: 167,
     comments: [
       { id: 'c3', user: 'Divya N.', text: 'Walking that tunnel between Amber and Jaigarh was the highlight of our Jaipur trip! You can feel the mountain breeze whistling through the slits.', time: '5 days ago' }
@@ -69,7 +67,6 @@ export const MOCK_STORIES = [
     content: 'In 1728 CE, Maharaja Sawai Jai Singh II was unsatisfied with the existing astronomical tables of Ulugh Beg and French astronomer Philippe de La Hire due to small angular discrepancies during solar eclipses. In the royal *Zij-i Muhammad Shahi* treatises preserved in the City Palace archives, his scribes recorded over 1,400 consecutive observations of the Moon, Venus, and Sirius using the Samrat Yantra sundial to recalibrate planetary tables for the Indian subcontinent.',
     image: 'https://images.unsplash.com/photo-1603813354784-48f8691515bb?auto=format&fit=crop&w=1200&q=80',
     upvotes: 539,
-    commentsCount: 41,
     savedCount: 220,
     comments: [
       { id: 'c4', user: 'Prof. S. Sen', text: 'The Zij-i Muhammad Shahi is one of the greatest syncretic scientific texts of the 18th century. Wonderful archival documentation!', time: '1 week ago' }
@@ -97,7 +94,6 @@ export const MOCK_STORIES = [
     content: 'Before the world woke up, Ustad Bismillah Khan would sit at the small Balaji temple near the ghats, practicing Raga Bhairav while the river mist touched his fingers. Listen to this rare family oral recording sharing his philosophy on how the breath of the shehnai mimics the slow ripple of the Ganga current at sunrise.',
     image: 'https://images.unsplash.com/photo-1561361513-2d000a50f0dc?auto=format&fit=crop&w=1200&q=80',
     upvotes: 681,
-    commentsCount: 64,
     savedCount: 310,
     comments: [
       { id: 'c5', user: 'Meera Iyer', text: 'This audio snippet gave me goosebumps. Pure divine soul.', time: '2 weeks ago' }
@@ -122,7 +118,6 @@ export const MOCK_STORIES = [
     content: 'This glass-plate negative photograph captured around 1890 shows the horse-drawn royal tongas and spice merchants gathered in the shadow of Hawa Mahal’s 953 jharokhas. Notice the unpaved limestone streets and the traditional red oxide limewash on the surrounding shopfronts before modern signage.',
     image: 'https://images.unsplash.com/photo-1609766857041-ed402ea8069a?auto=format&fit=crop&w=1200&q=80',
     upvotes: 490,
-    commentsCount: 29,
     savedCount: 185,
     comments: []
   }

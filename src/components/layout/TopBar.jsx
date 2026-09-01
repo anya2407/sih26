@@ -1,14 +1,8 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useHeritage } from '../../context/HeritageContext';
-import { CITIES_DATA } from '../../data/citiesData';
 import { 
-  Search, 
-  MapPin, 
-  ChevronDown, 
-  Volume2, 
-  VolumeX, 
+  Search,
   Bookmark, 
-  Sparkles,
   ArrowLeft
 } from 'lucide-react';
 import { AudioWave } from '../common/AudioWave';
@@ -17,9 +11,7 @@ export const TopBar = () => {
   const { 
     activeTab, 
     setActiveTab, 
-    currentCity, 
-    setCity, 
-    setIsLocationPickerOpen,
+    currentCity,
     setIsSearchModalOpen,
     guideState,
     toggleAudioPlayback,
@@ -30,13 +22,10 @@ export const TopBar = () => {
     currentMonument
   } = useHeritage();
 
-  const [isCityDropdownOpen, setIsCityDropdownOpen] = useState(false);
-
   const tabTitles = {
     explore: 'Cultural Discovery',
     guide: 'AI Voice Heritage Companion',
     community: 'Community Cultural Archive',
-    recommendations: 'Curated Recommendations',
     culture: 'Indian Cultural Mosaic',
     map: 'Heritage Discovery Map',
     profile: 'Saved & Cultural Passport'
@@ -83,67 +72,16 @@ export const TopBar = () => {
 
         {/* Global Search Button */}
         <button
-          onClick={() => setIsSearchModalOpen(true)}
+          onClick={() => {
+            setActiveTab('explore');
+            setIsSearchModalOpen(true);
+          }}
           className="p-2 md:px-3 md:py-2 text-heritage-textMuted hover:text-heritage-textDark hover:bg-heritage-beige rounded-xl border border-heritage-border/80 flex items-center gap-2 text-xs font-medium transition-colors"
           title="Search Cultural Heritage"
         >
           <Search className="w-4 h-4 text-heritage-red" />
           <span className="hidden lg:inline">Search</span>
         </button>
-
-        {/* Location Selector Dropdown */}
-        <div className="relative">
-          <button
-            onClick={() => setIsCityDropdownOpen(!isCityDropdownOpen)}
-            className="flex items-center gap-2 px-3 py-2 bg-white hover:bg-heritage-cardHover border border-heritage-border rounded-xl text-xs font-medium text-heritage-textDark shadow-subtle transition-all"
-          >
-            <MapPin className="w-3.5 h-3.5 text-heritage-red" />
-            <span className="font-semibold">{currentCity.name}</span>
-            <ChevronDown className={`w-3.5 h-3.5 text-heritage-textMuted transition-transform ${isCityDropdownOpen ? 'rotate-180' : ''}`} />
-          </button>
-
-          {/* Dropdown Menu */}
-          {isCityDropdownOpen && (
-            <div className="absolute right-0 mt-2 w-64 bg-white rounded-2xl shadow-modal border border-heritage-border p-2 z-50 animate-fade-in">
-              <div className="px-3 py-2 border-b border-heritage-border text-[11px] font-semibold text-heritage-textMuted uppercase tracking-wider flex items-center justify-between">
-                <span>Select Heritage Hub</span>
-                <span 
-                  onClick={() => {
-                    setIsCityDropdownOpen(false);
-                    setIsLocationPickerOpen(true);
-                  }}
-                  className="text-heritage-red cursor-pointer hover:underline text-[10px]"
-                >
-                  Open Map
-                </span>
-              </div>
-              <div className="max-h-60 overflow-y-auto py-1 space-y-1">
-                {CITIES_DATA.map((city) => (
-                  <button
-                    key={city.id}
-                    onClick={() => {
-                      setCity(city.id);
-                      setIsCityDropdownOpen(false);
-                    }}
-                    className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-left text-xs transition-colors ${
-                      city.id === currentCity.id
-                        ? 'bg-red-50 text-heritage-red font-semibold'
-                        : 'hover:bg-heritage-bg text-heritage-textDark'
-                    }`}
-                  >
-                    <div>
-                      <p className="font-medium">{city.name}, {city.state}</p>
-                      <p className="text-[10px] text-heritage-textMuted">{city.heritageCount} Monuments & Sites</p>
-                    </div>
-                    <span className="font-editorial-serif text-sm font-semibold opacity-70">
-                      {city.hindiName}
-                    </span>
-                  </button>
-                ))}
-              </div>
-            </div>
-          )}
-        </div>
 
         {/* Saved Items Shortcut */}
         <button

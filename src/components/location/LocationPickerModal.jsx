@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useHeritage } from '../../context/HeritageContext';
 import { CITIES_DATA } from '../../data/citiesData';
 import { MOCK_HERITAGE } from '../../data/mockHeritage';
-import { X, MapPin, Search, Compass, Check, ArrowRight, Layers } from 'lucide-react';
+import { X, MapPin, Search, Check, ArrowRight } from 'lucide-react';
 import { Badge } from '../common/Badge';
 
 export const LocationPickerModal = () => {
@@ -49,20 +49,13 @@ export const LocationPickerModal = () => {
         
         {/* Left Side: Interactive Map Simulation Area */}
         <div className="relative flex-1 bg-[#F4EFE6] min-h-[300px] flex flex-col justify-between overflow-hidden">
-          {/* Subtle Top Map Control Bar */}
-          <div className="absolute top-4 left-4 right-4 z-10 flex items-start justify-between gap-3 pointer-events-auto">
-            <div className="flex max-w-[calc(100%-3rem)] items-center gap-2 bg-white/95 backdrop-blur-md px-3.5 py-2 rounded-xl shadow-card border border-heritage-border text-xs font-semibold text-heritage-textDark">
-              <Compass className="w-4 h-4 text-heritage-red animate-pulse" />
-              <span className="min-w-0 leading-snug">Interactive Cultural Cartography</span>
-            </div>
-
-            <button
-              onClick={() => setIsLocationPickerOpen(false)}
-              className="md:hidden p-2 bg-white/90 rounded-full border border-heritage-border text-heritage-textDark"
-            >
-              <X className="w-4 h-4" />
-            </button>
-          </div>
+          <button
+            onClick={() => setIsLocationPickerOpen(false)}
+            className="absolute top-4 right-4 z-10 md:hidden p-2 bg-white/90 rounded-full border border-heritage-border text-heritage-textDark"
+            aria-label="Close location picker"
+          >
+            <X className="w-4 h-4" />
+          </button>
 
           {/* Simulated Vector / Architectural Map Canvas */}
           <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-90">
@@ -114,16 +107,6 @@ export const LocationPickerModal = () => {
             })}
           </div>
 
-          {/* Bottom Map Info Strip */}
-          <div className="absolute inset-x-0 bottom-0 z-10 p-4 pt-10 bg-gradient-to-t from-[#EFE8DC] via-[#EFE8DC]/90 to-transparent flex flex-col items-start gap-2 text-xs text-heritage-textMuted sm:flex-row sm:items-center sm:justify-between">
-            <span className="flex shrink-0 items-center gap-1.5 font-medium">
-              <Layers className="w-3.5 h-3.5 text-heritage-red" />
-              Radius: 15 km Cultural Zone
-            </span>
-            {activeCity && <span className="bg-white/80 px-2 py-0.5 rounded border border-heritage-border text-[10px] font-mono">
-              GPS: {activeCity.coordinates.lat.toFixed(4)}° N, {activeCity.coordinates.lng.toFixed(4)}° E
-            </span>}
-          </div>
         </div>
 
         {/* Right Side: Location Selection & Confirmation Panel */}

@@ -66,7 +66,7 @@ export const MOCK_RECOMMENDATIONS = [
     category: 'Textiles',
     cityId: 'jaipur',
     distanceKm: 1.8,
-    reasonTag: 'Curated for you · Historical Artisan Guild',
+    reasonTag: 'Historical Artisan Guild',
     rating: 4.7,
     reviewsCount: 710,
     image: 'https://images.unsplash.com/photo-1578749556568-bc2c40e68b61?auto=format&fit=crop&w=1000&q=80',
@@ -85,7 +85,7 @@ export const MOCK_RECOMMENDATIONS = [
     rating: 5.0,
     reviewsCount: 950,
     image: 'https://images.unsplash.com/photo-1599661046289-e31897846e41?auto=format&fit=crop&w=1000&q=80',
-    description: 'A curated guided walk through the 300-year-old subterranean havelis, stepwells, and temple courtyards with royal historians.',
+    description: 'A guided walk through the 300-year-old subterranean havelis, stepwells, and temple courtyards with royal historians.',
     location: 'Starts at Chandpole Gate, Jaipur',
     tags: ['Heritage Walk', 'Architectural Guide', 'Living History', 'Storytelling']
   }
