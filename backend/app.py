@@ -161,6 +161,23 @@ def create_location():
             "error": "Invalid data"
         }), 400
 
+@app.route("/api/delete-location/<int:location_id>", methods=["DELETE"])
+def delete_location(location_id):
+
+    location = Location.query.get(location_id)
+
+    if not location:
+        return jsonify({
+            "error": "Location not found"
+        }), 404
+
+    db.session.delete(location)
+    db.session.commit()
+
+    return jsonify({
+        "message": "Location deleted"
+    })
+
 # -------------------------
 # Distance helper
 # -------------------------
@@ -214,6 +231,7 @@ def get_monument():
             matches.append((distance, location))
 
     if not matches:
+        print(f"lat: {lat}, lon: {lon}")
         return jsonify({
             "error": "No heritage monument found at this location"
         }), 404
