@@ -1,7 +1,7 @@
 from flask import Flask, request, jsonify, render_template, redirect
 from flask_cors import CORS
 from models import db, State, Monument, Location
-
+from llmcall import get_heritage_guide
 from math import radians, sin, cos, sqrt, atan2
 import llmcall
 
