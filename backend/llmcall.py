@@ -41,3 +41,35 @@ Return ONLY the explanation that should be spoken to the visitor.
 
     return response.output_text
 
+def answer_heritage_question(area: str, description: str, question: str) -> str:
+    prompt = f"""
+You are an intelligent AI heritage guide for an Indian cultural heritage project.
+
+The visitor is currently exploring:
+{area}
+
+Description of this area:
+{description}
+
+The visitor has asked:
+{question}
+
+Answer the visitor's question using the provided location context.
+
+Rules:
+- Answer specifically about the current heritage location.
+- Use historical and cultural information when relevant.
+- Be clear and engaging, like a knowledgeable tourist guide.
+- Do not make up facts.
+- If the question cannot be answered reliably from the available context, say so rather than inventing information.
+- Keep the answer concise enough to be spoken aloud.
+
+Return ONLY the answer to the visitor's question.
+"""
+
+    response = client.responses.create(
+        model="gpt-5.6",
+        input=prompt
+    )
+
+    return response.output_text
