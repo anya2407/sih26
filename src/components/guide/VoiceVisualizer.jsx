@@ -63,14 +63,14 @@ export const VoiceVisualizer = ({
       {/* State Indicator Text */}
       <div className="mt-5 text-center">
         <p className="font-editorial-heading font-bold text-sm tracking-wide text-heritage-textDark">
-          {state === 'speaking' && 'The AI Guide is narrating...'}
-          {state === 'listening' && 'Listening to your historical question...'}
-          {state === 'idle' && 'Tap the microphone or select a question'}
+          {state === 'speaking' && 'AI Voice Narration Active'}
+          {state === 'listening' && 'Connecting to Location AI...'}
+          {state === 'idle' && 'Tap Guide Me to start narration'}
         </p>
         <p className="text-xs text-heritage-textMuted mt-0.5">
-          {state === 'speaking' && 'Listen carefully to the architectural details'}
-          {state === 'listening' && 'Ask about origins, royal secrets, or craft techniques'}
-          {state === 'idle' && 'Location-aware voice AI companion active'}
+          {state === 'speaking' && 'Streaming architectural and historical context'}
+          {state === 'listening' && 'Finding exact coordinates and preparing audio'}
+          {state === 'idle' && 'Real-time location-aware heritage audio guide'}
         </p>
       </div>
     </div>

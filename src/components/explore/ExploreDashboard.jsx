@@ -13,20 +13,17 @@ import {
   ArrowRight, 
   Headphones, 
   Compass, 
-  BookOpen, 
-  Layers, 
-  Calendar,
-  Search,
-  ShieldCheck
+  Search
 } from 'lucide-react';
 import { Badge } from '../common/Badge';
 
 export const ExploreDashboard = () => {
   const { 
     currentCity, 
-    setIsLocationPickerOpen, 
+    currentMonument,
+    locationState,
     setActiveTab, 
-    startAudioGuide, 
+    triggerGuideMe, 
     openMonumentDetail,
     setIsSearchModalOpen
   } = useHeritage();
@@ -39,13 +36,49 @@ export const ExploreDashboard = () => {
     return 'Good evening';
   };
 
-  const cityMonuments = MOCK_HERITAGE.filter(m => m.cityId === currentCity.id);
-  const featuredMonument = cityMonuments[0] || MOCK_HERITAGE[0];
-  const otherMonuments = cityMonuments.slice(1);
+  const detectedState = locationState.state || currentCity.state || 'India';
+  const stateQuery = detectedState.toLowerCase();
+  const detectedMonumentName = locationState.monumentName || currentMonument.name || 'Heritage Monument';
 
-  const cityStories = MOCK_STORIES.filter(s => s.cityId === currentCity.id || s.cityId === 'jaipur');
-  const cityRecommendations = MOCK_RECOMMENDATIONS.filter(r => r.cityId === currentCity.id || r.cityId === 'jaipur');
-  const events = cityRecommendations.filter(r => r.category === 'Events');
+  // Dynamic monument list matching detected region / monument
+  const matchingMonuments = React.useMemo(() => {
+    return MOCK_HERITAGE.filter(m => {
+      if (!stateQuery) return true;
+      const matchState = m.locationName.toLowerCase().includes(stateQuery);
+      const matchName = locationState.monumentName && m.name.toLowerCase().includes(locationState.monumentName.toLowerCase());
+      return matchState || matchName;
+    });
+  }, [stateQuery, locationState.monumentName]);
+
+  const featuredMonument = currentMonument || matchingMonuments[0] || MOCK_HERITAGE[0];
+  const otherMonuments = matchingMonuments.filter(m => m.name !== featuredMonument.name);
+
+  // Dynamic culture, stories, and recommendations
+  const dynamicCulture = React.useMemo(() => {
+    const filtered = MOCK_CULTURE.filter(c => 
+      c.tagline.toLowerCase().includes(stateQuery) || 
+      c.description.toLowerCase().includes(stateQuery)
+    );
+    return filtered.length > 0 ? filtered : MOCK_CULTURE;
+  }, [stateQuery]);
+
+  const dynamicStories = React.useMemo(() => {
+    const filtered = MOCK_STORIES.filter(s => 
+      s.location.toLowerCase().includes(stateQuery) || 
+      s.content.toLowerCase().includes(stateQuery)
+    );
+    return filtered.length > 0 ? filtered : MOCK_STORIES;
+  }, [stateQuery]);
+
+  const dynamicRecommendations = React.useMemo(() => {
+    const filtered = MOCK_RECOMMENDATIONS.filter(r => 
+      r.location.toLowerCase().includes(stateQuery) || 
+      r.description.toLowerCase().includes(stateQuery)
+    );
+    return filtered.length > 0 ? filtered : MOCK_RECOMMENDATIONS;
+  }, [stateQuery]);
+
+  const events = dynamicRecommendations.filter(r => r.category === 'Events');
 
   return (
     <div className="space-y-10 pb-16 animate-fade-in">
@@ -60,19 +93,19 @@ export const ExploreDashboard = () => {
             <div className="flex items-center gap-2 mb-3">
               <span className="flex items-center gap-1.5 px-3 py-1 bg-red-50 text-heritage-red border border-red-200 rounded-full text-xs font-bold shadow-subtle">
                 <MapPin className="w-3.5 h-3.5" />
-                {currentCity.name}, {currentCity.state}
+                {detectedMonumentName}, {detectedState}
               </span>
               <span className="text-xs font-semibold text-heritage-textMuted">
-                {currentCity.climate}
+                {currentCity.climate || 'Cultural Climate'}
               </span>
             </div>
 
             <h1 className="font-editorial-heading font-bold text-2xl sm:text-4xl text-heritage-textDark leading-tight tracking-tight">
-              {getGreeting()}. Discover what makes <span className="text-heritage-red italic font-editorial-serif font-normal">{currentCity.name}</span> extraordinary.
+              {getGreeting()}. Discover what makes <span className="text-heritage-red italic font-editorial-serif font-normal">{detectedMonumentName}</span> extraordinary.
             </h1>
 
             <p className="mt-3 text-sm sm:text-base text-heritage-textMuted leading-relaxed">
-              {currentCity.description}
+              Explore living traditions, architectural marvels, and authentic archives preserved across {detectedState}.
             </p>
 
             <button
@@ -86,13 +119,13 @@ export const ExploreDashboard = () => {
             {/* Quick stats pills */}
             <div className="mt-5 flex flex-wrap items-center gap-2 sm:gap-4 text-xs font-medium text-heritage-textDark">
               <span className="px-3 py-1.5 bg-heritage-bg rounded-xl border border-heritage-border flex items-center gap-1.5">
-                🏛️ <strong className="font-semibold">{currentCity.heritageCount}</strong> Royal Sites
+                🏛️ <strong className="font-semibold">{locationState.pointsOfInterest.length || currentCity.heritageCount}</strong> Key Sites
               </span>
               <span className="px-3 py-1.5 bg-heritage-bg rounded-xl border border-heritage-border flex items-center gap-1.5">
-                🎨 <strong className="font-semibold">{currentCity.cultureCount}</strong> Living Crafts
+                🎨 <strong className="font-semibold">{dynamicCulture.length}</strong> Living Crafts
               </span>
               <span className="px-3 py-1.5 bg-heritage-bg rounded-xl border border-heritage-border flex items-center gap-1.5">
-                📜 <strong className="font-semibold">{currentCity.storiesCount}</strong> Oral Traditions
+                📜 <strong className="font-semibold">{dynamicStories.length}</strong> Oral Traditions
               </span>
             </div>
           </div>
@@ -111,16 +144,19 @@ export const ExploreDashboard = () => {
                 Ready to explore with voice?
               </h4>
               <p className="text-xs text-heritage-textMuted mt-1 leading-relaxed">
-                Stand near any monument and listen to location-aware historical narration in real time.
+                Stand near any spot at {detectedMonumentName} and listen to location-aware historical narration in real time.
               </p>
             </div>
 
             <button
-              onClick={() => startAudioGuide(featuredMonument.id)}
+              onClick={() => {
+                setActiveTab('guide');
+                triggerGuideMe();
+              }}
               className="mt-4 w-full py-2.5 px-4 bg-heritage-red hover:bg-heritage-deepRed text-white text-xs font-semibold rounded-xl shadow-subtle flex items-center justify-center gap-2 transition-all"
             >
               <Headphones className="w-3.5 h-3.5" />
-              <span>Listen at {featuredMonument.name}</span>
+              <span>Guide Me at {detectedMonumentName}</span>
             </button>
           </div>
         </div>
@@ -134,7 +170,7 @@ export const ExploreDashboard = () => {
               Architectural Wonders
             </span>
             <h2 className="font-editorial-heading font-bold text-xl sm:text-2xl text-heritage-textDark mt-1">
-              Nearby Heritage & Forts
+              Nearby Heritage & Sites
             </h2>
           </div>
 
@@ -168,7 +204,7 @@ export const ExploreDashboard = () => {
               Living Heritage
             </span>
             <h2 className="font-editorial-heading font-bold text-xl sm:text-2xl text-heritage-textDark mt-1">
-              Experience the Culture
+              Experience the Culture · {detectedState}
             </h2>
           </div>
 
@@ -182,13 +218,13 @@ export const ExploreDashboard = () => {
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-          {MOCK_CULTURE.map(culture => (
+          {dynamicCulture.map(culture => (
             <CultureCard key={culture.id} culture={culture} />
           ))}
         </div>
       </section>
 
-      {/* 4. Section: Stories From Here (Editorial Storytelling Block) */}
+      {/* 4. Section: Stories From Here */}
       <section className="space-y-6">
         <div className="flex items-end justify-between">
           <div>
@@ -196,7 +232,7 @@ export const ExploreDashboard = () => {
               Oral History & Archives
             </span>
             <h2 className="font-editorial-heading font-bold text-xl sm:text-2xl text-heritage-textDark mt-1">
-              Stories From Here
+              Stories From {detectedState}
             </h2>
           </div>
 
@@ -204,13 +240,13 @@ export const ExploreDashboard = () => {
             onClick={() => setActiveTab('community')}
             className="flex items-center gap-1.5 text-xs font-semibold text-heritage-red hover:underline"
           >
-            <span>View all {cityStories.length} stories</span>
+            <span>View all {dynamicStories.length} stories</span>
             <ArrowRight className="w-3.5 h-3.5" />
           </button>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          {cityStories.slice(0, 2).map(story => (
+          {dynamicStories.slice(0, 2).map(story => (
             <div
               key={story.id}
               onClick={() => setActiveTab('community')}
@@ -269,19 +305,18 @@ export const ExploreDashboard = () => {
               Live Festivals & Walks
             </span>
             <h2 className="font-editorial-heading font-bold text-xl sm:text-2xl text-heritage-textDark mt-1">
-              Happening Nearby
+              Happening in {detectedState}
             </h2>
           </div>
 
-          <span className="text-xs font-semibold text-heritage-textMuted">Local highlights</span>
+          <span className="text-xs font-semibold text-heritage-textMuted">Regional highlights</span>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
           {events.map(event => (
             <EventCard key={event.id} event={event} />
           ))}
-          {/* Fallback local highlight if fewer events */}
-          {cityRecommendations.slice(0, 1).map(rec => (
+          {dynamicRecommendations.slice(0, 2).map(rec => (
             <EventCard key={rec.id} event={rec} />
           ))}
         </div>

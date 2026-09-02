@@ -1,24 +1,25 @@
 import React from 'react';
 import { useHeritage } from '../../context/HeritageContext';
-import { MOCK_HERITAGE } from '../../data/mockHeritage';
 import { Play, Pause, X, Maximize2, Headphones } from 'lucide-react';
 import { AudioWave } from '../common/AudioWave';
 
 export const MiniPlayer = () => {
   const { 
     guideState, 
+    locationState,
+    currentMonument,
     toggleAudioPlayback, 
     stopAudioGuide, 
     setActiveTab, 
-    activeTab,
-    isDetailViewOpen 
+    activeTab 
   } = useHeritage();
 
   // Hide mini player if we are already on the full guide page or if not visible
   if (!guideState.isMiniPlayerVisible || activeTab === 'guide') return null;
 
-  const currentMon = MOCK_HERITAGE.find(m => m.id === guideState.monumentId) || MOCK_HERITAGE[0];
-  const currentPoi = currentMon.pointsOfInterest?.find(p => p.id === guideState.currentPoiId) || currentMon.pointsOfInterest?.[0];
+  const monumentName = locationState.monumentName || currentMonument.name || 'AI Heritage Guide';
+  const currentSpot = locationState.currentPointOfInterest || (locationState.pointsOfInterest[0]?.name) || 'Heritage Narration';
+  const heroImage = currentMonument.heroImage || 'https://images.unsplash.com/photo-1599661046289-e31897846e41?auto=format&fit=crop&w=1600&q=80';
 
   const handleExpand = () => {
     setActiveTab('guide');
@@ -34,8 +35,8 @@ export const MiniPlayer = () => {
         >
           <div className="relative w-11 h-11 rounded-xl overflow-hidden flex-shrink-0 border border-heritage-border">
             <img
-              src={currentMon.heroImage}
-              alt={currentMon.name}
+              src={heroImage}
+              alt={monumentName}
               className="w-full h-full object-cover"
             />
             <div className="absolute inset-0 bg-black/20 flex items-center justify-center">
@@ -46,12 +47,12 @@ export const MiniPlayer = () => {
           <div className="min-w-0 flex-1">
             <div className="flex items-center gap-1.5">
               <p className="text-xs font-bold text-heritage-textDark truncate group-hover:text-heritage-red transition-colors">
-                {currentMon.name}
+                {monumentName}
               </p>
               <AudioWave isPlaying={guideState.isPlaying} barCount={3} className="h-3" />
             </div>
             <p className="text-[11px] text-heritage-textMuted truncate">
-              {currentPoi ? currentPoi.name : 'AI Audio Guide'}
+              {currentSpot}
             </p>
           </div>
         </div>

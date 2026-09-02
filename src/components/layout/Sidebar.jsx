@@ -17,6 +17,7 @@ export const Sidebar = () => {
     activeTab, 
     setActiveTab, 
     currentCity, 
+    locationState,
     setIsLocationPickerOpen,
     guideState,
     userPassport,
@@ -145,15 +146,15 @@ export const Sidebar = () => {
             <span className="text-[10px] text-heritage-red group-hover:underline">Change</span>
           </div>
           <div className="flex items-center justify-between">
-            <div>
-              <p className="font-semibold text-sm text-heritage-textDark leading-tight">
-                {currentCity.name}, {currentCity.state}
+            <div className="min-w-0 flex-1 mr-2">
+              <p className="font-semibold text-sm text-heritage-textDark leading-tight truncate">
+                {locationState.monumentName || currentCity.name}
               </p>
-              <p className="text-[11px] text-heritage-textMuted mt-0.5">
-                {currentCity.heritageCount} Heritage Sites Nearby
+              <p className="text-[11px] text-heritage-textMuted mt-0.5 truncate">
+                {locationState.state || currentCity.state} · {locationState.pointsOfInterest.length || currentCity.heritageCount} Sites
               </p>
             </div>
-            <ChevronRight className="w-4 h-4 text-heritage-textMuted group-hover:translate-x-0.5 transition-transform" />
+            <ChevronRight className="w-4 h-4 text-heritage-textMuted group-hover:translate-x-0.5 transition-transform flex-shrink-0" />
           </div>
         </div>
 

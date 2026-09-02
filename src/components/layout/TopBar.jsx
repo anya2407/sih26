@@ -12,14 +12,13 @@ export const TopBar = () => {
     activeTab, 
     setActiveTab, 
     currentCity,
+    locationState,
     setIsSearchModalOpen,
     guideState,
-    toggleAudioPlayback,
     savedHeritageIds,
     savedStoryIds,
     isDetailViewOpen,
-    closeMonumentDetail,
-    currentMonument
+    closeMonumentDetail
   } = useHeritage();
 
   const tabTitles = {
@@ -48,7 +47,7 @@ export const TopBar = () => {
         ) : (
           <div>
             <span className="text-[10px] uppercase font-semibold tracking-widest text-heritage-textMuted/90">
-              {currentCity.name} · {currentCity.state}
+              {locationState.state ? `${locationState.monumentName ? `${locationState.monumentName} · ` : ''}${locationState.state}` : `${currentCity.name} · ${currentCity.state}`}
             </span>
             <h2 className="font-editorial-heading font-semibold text-lg md:text-xl text-heritage-textDark leading-tight">
               {tabTitles[activeTab]}

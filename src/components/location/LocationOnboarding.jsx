@@ -1,12 +1,17 @@
 import React, { useState } from 'react';
 import { useHeritage } from '../../context/HeritageContext';
 import { CITIES_DATA } from '../../data/citiesData';
-import { MapPin, Navigation, Map, Search, Sparkles, ArrowRight, ShieldCheck } from 'lucide-react';
+import { MapPin, Navigation, Map, Search, Sparkles, ArrowRight, ShieldCheck, AlertCircle, RefreshCw } from 'lucide-react';
 
 export const LocationOnboarding = () => {
-  const { completeOnboarding, setIsLocationPickerOpen } = useHeritage();
+  const { 
+    completeOnboarding, 
+    setIsLocationPickerOpen,
+    requestUserLocation,
+    locationState 
+  } = useHeritage();
+
   const [selectedCityId, setSelectedCityId] = useState(null);
-  const [isLocating, setIsLocating] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
 
   const selectedCity = CITIES_DATA.find(c => c.id === selectedCityId);
@@ -16,18 +21,15 @@ export const LocationOnboarding = () => {
     c.state.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  // Simulated high-fidelity GPS detection
   const handleUseMyLocation = () => {
-    setIsLocating(true);
-    setTimeout(() => {
-      setSelectedCityId('jaipur');
-      setIsLocating(false);
-    }, 900);
+    requestUserLocation();
   };
 
   const handleStartExploring = () => {
     if (selectedCityId) completeOnboarding(selectedCityId);
   };
+
+  const isLocating = locationState.isLocating || locationState.isGettingMonument;
 
   return (
     <div className="min-h-screen bg-heritage-bg flex flex-col justify-between relative overflow-hidden bg-heritage-pattern select-none">
@@ -73,16 +75,52 @@ export const LocationOnboarding = () => {
         </h1>
 
         <p className="mt-4 md:mt-6 text-sm sm:text-lg text-heritage-textMuted max-w-xl font-normal leading-relaxed">
-          India is not just a place to visit. It is an unbroken story of monuments, sacred sounds, living crafts, and oral wisdom waiting to surround you.
+          India is an unbroken story of monuments, sacred sounds, living crafts, and oral wisdom. Enable GPS for instant AI heritage detection.
         </p>
+
+        {/* Location Error / Permission Banner if denied */}
+        {locationState.errorMessage && (
+          <div className="mt-6 w-full max-w-xl p-4 bg-amber-50 border border-amber-200 rounded-2xl flex flex-col sm:flex-row items-center justify-between gap-3 text-amber-900 text-left animate-fade-in shadow-subtle">
+            <div className="flex items-center gap-2.5 text-xs sm:text-sm">
+              <AlertCircle className="w-4 h-4 text-amber-600 flex-shrink-0" />
+              <span>{locationState.errorMessage}</span>
+            </div>
+            <button
+              onClick={handleUseMyLocation}
+              className="px-3.5 py-1.5 bg-amber-600 hover:bg-amber-700 text-white rounded-xl text-xs font-semibold flex items-center gap-1.5 transition-colors flex-shrink-0 shadow-subtle"
+            >
+              <RefreshCw className={`w-3.5 h-3.5 ${isLocating ? 'animate-spin' : ''}`} />
+              <span>Retry GPS</span>
+            </button>
+          </div>
+        )}
 
         {/* Location Selection Interaction Box */}
         <div className="mt-8 md:mt-10 w-full max-w-xl bg-white p-6 sm:p-8 rounded-3xl shadow-card border border-heritage-border text-left animate-fade-in">
           <label className="block text-xs font-bold uppercase tracking-wider text-heritage-textMuted mb-2">
-            Select Your Region or Heritage Hub
+            Instant Location Detection or Region Selection
           </label>
 
-          {/* Search / Input Box */}
+          {/* Primary Quick GPS Action */}
+          <div className="grid grid-cols-2 gap-3 mb-6">
+            <button
+              onClick={handleUseMyLocation}
+              disabled={isLocating}
+              className="flex items-center justify-center gap-2 py-3 px-3 bg-red-50 hover:bg-red-100/80 border border-red-200 rounded-xl text-xs font-bold text-heritage-red shadow-subtle transition-all"
+            >
+              <Navigation className={`w-4 h-4 text-heritage-red ${isLocating ? 'animate-spin' : ''}`} />
+              <span>{isLocating ? (locationState.statusMessage || 'Detecting GPS...') : 'Use My Live GPS'}</span>
+            </button>
+
+            <button
+              onClick={() => setIsLocationPickerOpen(true)}
+              className="flex items-center justify-center gap-2 py-3 px-3 bg-heritage-bg hover:bg-heritage-beige border border-heritage-border rounded-xl text-xs font-semibold text-heritage-textDark transition-all"
+            >
+              <Map className="w-4 h-4 text-heritage-red" />
+              <span>Choose on Map</span>
+            </button>
+          </div>
+
           <div className="relative flex items-center mb-4">
             <Search className="w-4 h-4 text-heritage-textMuted absolute left-4 pointer-events-none" />
             <input
@@ -120,65 +158,47 @@ export const LocationOnboarding = () => {
           </div>
 
           {/* Selected City Context Snapshot */}
-          {selectedCity ? <div className="p-4 bg-heritage-bg/70 rounded-2xl border border-heritage-border/80 mb-6 flex items-start gap-4">
-            <img
-              src={selectedCity.coverImage}
-              alt={selectedCity.name}
-              className="w-16 h-16 rounded-xl object-cover border border-heritage-border shadow-subtle flex-shrink-0"
-            />
-            <div className="min-w-0 flex-1">
-              <div className="flex items-center justify-between">
-                <h3 className="font-editorial-heading font-bold text-base text-heritage-textDark">
-                  {selectedCity.name}, {selectedCity.state}
-                </h3>
-                <span className="font-editorial-serif text-sm font-bold text-heritage-red">
-                  {selectedCity.hindiName}
-                </span>
-              </div>
-              <p className="text-xs text-heritage-textMuted line-clamp-1 mt-0.5">
-                {selectedCity.tagline}
-              </p>
-              <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-[11px] text-heritage-textDark font-medium">
-                <span>📍 {selectedCity.heritageCount} Monuments</span>
-                <span>•</span>
-                <span>🎨 {selectedCity.cultureCount} Living Crafts</span>
-                <span>•</span>
-                <span>📜 {selectedCity.storiesCount} Stories</span>
+          {selectedCity ? (
+            <div className="p-4 bg-heritage-bg/70 rounded-2xl border border-heritage-border/80 mb-6 flex items-start gap-4">
+              <img
+                src={selectedCity.coverImage}
+                alt={selectedCity.name}
+                className="w-16 h-16 rounded-xl object-cover border border-heritage-border shadow-subtle flex-shrink-0"
+              />
+              <div className="min-w-0 flex-1">
+                <div className="flex items-center justify-between">
+                  <h3 className="font-editorial-heading font-bold text-base text-heritage-textDark">
+                    {selectedCity.name}, {selectedCity.state}
+                  </h3>
+                  <span className="font-editorial-serif text-sm font-bold text-heritage-red">
+                    {selectedCity.hindiName}
+                  </span>
+                </div>
+                <p className="text-xs text-heritage-textMuted line-clamp-1 mt-0.5">
+                  {selectedCity.tagline}
+                </p>
+                <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-[11px] text-heritage-textDark font-medium">
+                  <span>📍 {selectedCity.heritageCount} Monuments</span>
+                  <span>•</span>
+                  <span>🎨 {selectedCity.cultureCount} Living Crafts</span>
+                  <span>•</span>
+                  <span>📜 {selectedCity.storiesCount} Stories</span>
+                </div>
               </div>
             </div>
-          </div> : (
+          ) : (
             <div className="p-4 bg-heritage-bg/70 rounded-2xl border border-dashed border-heritage-border/80 mb-6 text-xs text-heritage-textMuted">
-              Choose a cultural center above, or select one on the map, to begin your heritage journey.
+              Click <strong className="text-heritage-textDark">"Use My Live GPS"</strong> above for automatic location detection, or select a cultural hub to explore.
             </div>
           )}
-
-          {/* Dual Action Buttons: Use My Location & Choose on Map */}
-          <div className="grid grid-cols-2 gap-3 mb-6">
-            <button
-              onClick={handleUseMyLocation}
-              disabled={isLocating}
-              className="flex items-center justify-center gap-2 py-2.5 px-3 bg-heritage-bg hover:bg-heritage-beige border border-heritage-border rounded-xl text-xs font-semibold text-heritage-textDark transition-all"
-            >
-              <Navigation className={`w-3.5 h-3.5 text-heritage-red ${isLocating ? 'animate-spin' : ''}`} />
-              <span>{isLocating ? 'Locating...' : 'Use My GPS'}</span>
-            </button>
-
-            <button
-              onClick={() => setIsLocationPickerOpen(true)}
-              className="flex items-center justify-center gap-2 py-2.5 px-3 bg-heritage-bg hover:bg-heritage-beige border border-heritage-border rounded-xl text-xs font-semibold text-heritage-textDark transition-all"
-            >
-              <Map className="w-3.5 h-3.5 text-heritage-red" />
-              <span>Choose on Map</span>
-            </button>
-          </div>
 
           {/* Primary CTA */}
           <button
             onClick={handleStartExploring}
-            disabled={!selectedCity}
+            disabled={!selectedCity && !isLocating}
             className="w-full py-4 px-6 bg-heritage-red hover:bg-heritage-deepRed disabled:bg-heritage-red/40 disabled:cursor-not-allowed text-white font-semibold text-sm rounded-xl shadow-card hover:shadow-card-hover transition-all flex items-center justify-center gap-2 group"
           >
-            <span>{selectedCity ? `Explore from ${selectedCity.name}` : 'Select a destination to explore'}</span>
+            <span>{selectedCity ? `Explore from ${selectedCity.name}` : 'Select a destination or enable GPS'}</span>
             <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
           </button>
         </div>
