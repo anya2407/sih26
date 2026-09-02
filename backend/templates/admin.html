@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <title>Heritage Admin</title>
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1"
+    >
+
+    <style>
+
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 20px;
+        }
+
+        form {
+            border: 1px solid #ddd;
+            padding: 25px;
+            margin-bottom: 30px;
+            border-radius: 8px;
+        }
+
+        input,
+        select,
+        textarea,
+        button {
+            width: 100%;
+            box-sizing: border-box;
+            padding: 10px;
+            margin: 7px 0 15px;
+        }
+
+        button {
+            cursor: pointer;
+        }
+
+        .monument {
+            border: 1px solid #ddd;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 8px;
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+    <h1>Heritage Admin</h1>
+
+
+    <!-- ========================================= -->
+    <!-- ADD MONUMENT -->
+    <!-- ========================================= -->
+
+    <form
+        action="/admin/monument"
+        method="POST"
+    >
+
+        <h2>Add Monument</h2>
+
+
+        <label>
+            Monument Name
+        </label>
+
+        <input
+            type="text"
+            name="name"
+            placeholder="e.g. Amber Fort"
+            required
+        >
+
+
+        <label>
+            State / Union Territory
+        </label>
+
+        <select
+            name="state"
+            required
+        >
+
+            <option value="">
+                Select state
+            </option>
+
+            {% for state in states %}
+
+                <option value="{{ state.id }}">
+                    {{ state.name }}
+                </option>
+
+            {% endfor %}
+
+        </select>
+
+
+        <button type="submit">
+            Add Monument
+        </button>
+
+    </form>
+
+
+    <!-- ========================================= -->
+    <!-- ADD LOCATION -->
+    <!-- ========================================= -->
+
+    <form id="locationForm">
+
+        <h2>Add Location / POI</h2>
+
+
+        <label>
+            Location Name
+        </label>
+
+        <input
+            type="text"
+            id="name"
+            placeholder="e.g. Sheesh Mahal"
+            required
+        >
+
+
+        <label>
+            Latitude
+        </label>
+
+        <input
+            type="number"
+            id="latitude"
+            step="any"
+            placeholder="27.1751"
+            required
+        >
+
+
+        <label>
+            Longitude
+        </label>
+
+        <input
+            type="number"
+            id="longitude"
+            step="any"
+            placeholder="78.0421"
+            required
+        >
+
+
+        <label>
+            Radius (metres)
+        </label>
+
+        <input
+            type="number"
+            id="radius"
+            min="1"
+            step="any"
+            value="50"
+            required
+        >
+
+
+        <label>
+            Monument
+        </label>
+
+        <select
+            id="monument"
+            required
+        >
+
+            <option value="">
+                Select monument
+            </option>
+
+            {% for monument in monuments %}
+
+                <option value="{{ monument.id }}">
+                    {{ monument.name }} — {{ monument.state_obj.name }}
+                </option>
+
+            {% endfor %}
+
+        </select>
+
+
+        <label>
+            Description
+        </label>
+
+        <textarea
+            id="description"
+            rows="5"
+            placeholder="Information about this location..."
+        ></textarea>
+
+
+        <button type="submit">
+            Add Location
+        </button>
+
+
+        <p id="status"></p>
+
+    </form>
+
+
+    <!-- ========================================= -->
+    <!-- EXISTING MONUMENTS -->
+    <!-- ========================================= -->
+
+    <h2>Existing Monuments</h2>
+
+
+    {% for monument in monuments %}
+
+        <div class="monument">
+
+            <h3>
+                {{ monument.name }}
+            </h3>
+
+            <p>
+                <b>State:</b>
+                {{ monument.state_obj.name }}
+            </p>
+
+
+            <b>Locations:</b>
+
+            <ul>
+
+                {% for location in monument.locations %}
+
+                    <li>
+
+                        {{ location.name }}
+
+                        —
+                        {{ location.latitude }},
+                        {{ location.longitude }}
+
+                        —
+                        {{ location.radius }}m
+
+                    </li>
+
+                {% else %}
+
+                    <li>
+                        No locations added yet.
+                    </li>
+
+                {% endfor %}
+
+            </ul>
+
+        </div>
+
+    {% endfor %}
+
+
+    <!-- ========================================= -->
+    <!-- JAVASCRIPT -->
+    <!-- ========================================= -->
+
+    <script>
+
+        document
+            .getElementById("locationForm")
+            .addEventListener("submit", async (e) => {
+
+                e.preventDefault();
+
+
+                const status =
+                    document.getElementById("status");
+
+
+                const response = await fetch(
+                    "/api/locations",
+                    {
+                        method: "POST",
+
+                        headers: {
+                            "Content-Type":
+                                "application/json"
+                        },
+
+                        body: JSON.stringify({
+
+                            name:
+                                document.getElementById("name").value,
+
+                            latitude:
+                                document.getElementById("latitude").value,
+
+                            longitude:
+                                document.getElementById("longitude").value,
+
+                            radius:
+                                document.getElementById("radius").value,
+
+                            monument:
+                                document.getElementById("monument").value,
+
+                            description:
+                                document.getElementById("description").value
+
+                        })
+                    }
+                );
+
+
+                const data =
+                    await response.json();
+
+
+                if (response.ok) {
+
+                    status.textContent =
+                        `Location saved! ID: ${data.id}`;
+
+                    e.target.reset();
+
+                    document.getElementById("radius").value = 50;
+
+                } else {
+
+                    status.textContent =
+                        data.error || "Something went wrong";
+
+                }
+
+            });
+
+    </script>
+
+</body>
+
+</html>
