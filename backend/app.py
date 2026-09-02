@@ -3,6 +3,7 @@ from flask_cors import CORS
 from models import db, State, Monument, Location
 
 from math import radians, sin, cos, sqrt, atan2
+import llmcall
 
 
 app = Flask(__name__)
@@ -285,16 +286,16 @@ def get_location():
         key=lambda x: x[0]
     )
 
+    text = get_heritage_guide(location.name,location.description)
+    #audio_file = text_to_speech(text)
+
     return jsonify({
         "currentLocation": location.name,
-        "transcript": location.description or "",
+        "transcript": text,
         "distance_m": round(distance, 2)
     })
 
 
-# -------------------------
-# Run
-# -------------------------
 
 with app.app_context():
     db.create_all()
