@@ -1,7 +1,7 @@
 from flask import Flask, request, jsonify, render_template, redirect
 from flask_cors import CORS
 from models import db, State, Monument, Location
-from llmcall import get_heritage_guide
+from llmcall import get_heritage_guide, answer_heritage_question
 from math import radians, sin, cos, sqrt, atan2
 import llmcall
 
@@ -311,6 +311,62 @@ def get_location():
         "currentLocation": location.name,
         "transcript": text,
         "distance_m": round(distance, 2)
+    })
+
+@app.route("/api/get-answer", methods=["POST"])
+def get_answer():
+    data = request.get_json()
+
+    latitude = data.get("latitude")
+    longitude = data.get("longitude")
+    question = data.get("question")
+
+    if latitude is None or longitude is None or not question:
+        return jsonify({
+            "error": "latitude, longitude and question are required"
+        }), 400
+
+    try:
+        latitude = float(latitude)
+        longitude = float(longitude)
+    except (TypeError, ValueError):
+        return jsonify({
+            "error": "Invalid latitude or longitude"
+        }), 400
+
+    # Find the closest mapped location
+    locations = Location.query.all()
+
+    closest_location = None
+    closest_distance = float("inf")
+
+    for location in locations:
+        distance = distance_m(
+            latitude,
+            longitude,
+            location.latitude,
+            location.longitude
+        )
+
+        if distance <= location.radius and distance < closest_distance:
+            closest_location = location
+            closest_distance = distance
+
+    if closest_location is None:
+        return jsonify({
+            "error": "You are not currently inside a mapped heritage location."
+        }), 404
+
+    answer = answer_heritage_question(
+        closest_location.name,
+        closest_location.description,
+        question
+    )
+
+    return jsonify({
+        "currentLocation": closest_location.name,
+        "answer": answer,
+        "distance_m": closest_distance
     })
 
 
