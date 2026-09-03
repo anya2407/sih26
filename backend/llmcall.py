@@ -48,9 +48,6 @@ You are an intelligent AI heritage guide for an Indian cultural heritage project
 The visitor is currently exploring:
 {area}
 
-Description of this area:
-{description}
-
 The visitor has asked:
 {question}
 
