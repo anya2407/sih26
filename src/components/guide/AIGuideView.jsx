@@ -301,7 +301,7 @@ export const AIGuideView = () => {
             ) : (
               <>
                 <Sparkles className="w-4 h-4" />
-                <span>Guide Me</span>
+                <span>Time Travel</span>
               </>
             )}
           </button>
