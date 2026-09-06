@@ -1,0 +1,184 @@
+import React from 'react';
+import { useHeritage } from '../../context/HeritageContext';
+import { 
+  Compass, 
+  Headphones, 
+  Users, 
+  Layers, 
+  Map as MapIcon, 
+  MapPin, 
+  ChevronRight,
+  Search
+} from 'lucide-react';
+import { AudioWave } from '../common/AudioWave';
+
+export const Sidebar = () => {
+  const { 
+    activeTab, 
+    setActiveTab, 
+    currentCity, 
+    locationState,
+    setIsLocationPickerOpen,
+    guideState,
+    userPassport,
+    setIsSearchModalOpen,
+    isDetailViewOpen,
+    closeMonumentDetail
+  } = useHeritage();
+
+  const navItems = [
+    { id: 'explore', label: 'Explore', icon: Compass },
+    { 
+      id: 'guide', 
+      label: 'AI Guide', 
+      icon: Headphones,
+      badge: guideState.isPlaying ? 'Active' : null,
+      showWave: guideState.isPlaying
+    },
+    { id: 'community', label: 'Community', icon: Users },
+    { id: 'culture', label: 'Cultural Mosaic', icon: Layers },
+    { id: 'map', label: 'Discovery Map', icon: MapIcon }
+  ];
+
+  const handleNavClick = (tabId) => {
+    if (isDetailViewOpen) {
+      closeMonumentDetail();
+    }
+    setActiveTab(tabId);
+  };
+
+  return (
+    <aside className="hidden md:flex flex-col justify-between w-64 h-screen sticky top-0 bg-[#F5EDE0] border-r border-heritage-border/80 z-30 select-none shadow-sm">
+      {/* Brand Header */}
+      <div>
+        <div className="p-6 border-b border-heritage-border/60">
+          <div className="flex items-center gap-3 cursor-pointer" onClick={() => handleNavClick('explore')}>
+            <div className="w-10 h-10 rounded-full border-2 border-heritage-red/70 bg-white text-heritage-red flex items-center justify-center font-serif text-base font-bold shadow-subtle">
+              स्मृ
+            </div>
+            <div>
+              <h1 className="font-serif font-bold text-2xl tracking-wider text-heritage-textDark leading-none">
+                SMRITI
+              </h1>
+              <p className="text-[9px] uppercase tracking-[0.2em] text-heritage-red font-medium mt-1 font-sans">
+                ✦ Heritage Companion ✦
+              </p>
+            </div>
+          </div>
+
+          {/* Quick Search Bar Trigger */}
+          <button
+            onClick={() => {
+              handleNavClick('explore');
+              setIsSearchModalOpen(true);
+            }}
+            className="w-full mt-5 flex items-center justify-between px-3 py-2 bg-white/80 hover:bg-white border border-heritage-border rounded-xl text-left text-xs text-heritage-textMuted transition-colors font-serif shadow-sm"
+          >
+            <span className="flex items-center gap-2">
+              <Search className="w-3.5 h-3.5 text-heritage-red" />
+              Search in Explore...
+            </span>
+            <kbd className="text-[10px] bg-heritage-parchment px-1.5 py-0.5 rounded border border-heritage-border font-mono text-heritage-textMuted">
+              ⌘K
+            </kbd>
+          </button>
+        </div>
+
+        {/* Navigation Items */}
+        <nav className="p-4 space-y-1.5">
+          <p className="px-3 py-1 text-[10px] font-sans font-semibold tracking-[0.2em] text-heritage-red/80 uppercase">
+            ✦ Navigation
+          </p>
+          {navItems.map((item) => {
+            const Icon = item.icon;
+            const isActive = activeTab === item.id && !isDetailViewOpen;
+
+            return (
+              <button
+                key={item.id}
+                onClick={() => handleNavClick(item.id)}
+                className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-full text-sm font-serif transition-all duration-200 group ${
+                  isActive
+                    ? 'bg-heritage-red text-white shadow-md border border-heritage-red'
+                    : 'text-heritage-textDark/80 hover:bg-white/70 hover:text-heritage-textDark'
+                }`}
+              >
+                <div className="flex items-center gap-3">
+                  <Icon
+                    className={`w-4 h-4 transition-colors ${
+                      isActive ? 'text-white' : 'text-heritage-textMuted group-hover:text-heritage-red'
+                    }`}
+                  />
+                  <span>{item.label}</span>
+                </div>
+
+                <div className="flex items-center gap-2">
+                  {item.showWave && <AudioWave isPlaying={true} barCount={4} />}
+                  {item.badge && (
+                    <span className={`text-[10px] px-2 py-0.5 rounded-full font-sans font-semibold ${
+                      isActive ? 'bg-white text-heritage-red' : 'bg-heritage-red text-white'
+                    }`}>
+                      {item.badge}
+                    </span>
+                  )}
+                  {item.count !== undefined && item.count > 0 && (
+                    <span className="text-[10px] bg-heritage-beige text-heritage-textDark px-2 py-0.5 rounded-full font-medium border border-heritage-border">
+                      {item.count}
+                    </span>
+                  )}
+                </div>
+              </button>
+            );
+          })}
+        </nav>
+      </div>
+
+      {/* Bottom Area: Location & User Passport Card */}
+      <div className="p-4 space-y-3 border-t border-heritage-border/60 bg-white/40 backdrop-blur-sm">
+        {/* Current Location Switcher Button */}
+        <div
+          onClick={() => setIsLocationPickerOpen(true)}
+          className="p-3 bg-white hover:bg-heritage-cardHover border border-heritage-border/80 rounded-xl cursor-pointer transition-all shadow-subtle group"
+        >
+          <div className="flex items-center justify-between text-xs text-heritage-textMuted mb-1 font-sans">
+            <span className="flex items-center gap-1 font-medium text-[10px] uppercase tracking-wider text-heritage-red">
+              <MapPin className="w-3 h-3 text-heritage-red" />
+              Active Region
+            </span>
+            <span className="text-[10px] text-heritage-red group-hover:underline">Change</span>
+          </div>
+          <div className="flex items-center justify-between">
+            <div className="min-w-0 flex-1 mr-2">
+              <p className="font-display font-semibold text-sm text-heritage-textDark leading-tight truncate">
+                {locationState.monumentName || currentCity.name}
+              </p>
+              <p className="text-[11px] text-heritage-textMuted mt-0.5 truncate font-serif">
+                {locationState.state || currentCity.state} · {locationState.pointsOfInterest.length || currentCity.heritageCount} Sites
+              </p>
+            </div>
+            <ChevronRight className="w-4 h-4 text-heritage-textMuted group-hover:translate-x-0.5 transition-transform flex-shrink-0" />
+          </div>
+        </div>
+
+        {/* User Cultural Passport Profile */}
+        <div 
+          onClick={() => handleNavClick('profile')}
+          className="flex items-center gap-3 p-2.5 rounded-xl hover:bg-white/80 cursor-pointer transition-colors border border-transparent hover:border-heritage-border/50"
+        >
+          <div className="w-9 h-9 rounded-full bg-heritage-red/10 border border-heritage-red/30 flex items-center justify-center font-bold text-xs text-heritage-red font-serif">
+            YR
+          </div>
+          <div className="flex-1 min-w-0">
+            <p className="text-xs font-semibold text-heritage-textDark truncate font-serif">
+              {userPassport.name}
+            </p>
+            <p className="text-[10px] text-heritage-textMuted truncate flex items-center gap-1 font-sans">
+              <span className="w-1.5 h-1.5 rounded-full bg-heritage-gold inline-block"></span>
+              {userPassport.levelTitle}
+            </p>
+          </div>
+        </div>
+      </div>
+    </aside>
+  );
+};

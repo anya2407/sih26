@@ -1,0 +1,184 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --bg-color: #F8F3EC;
+  --surface-color: #FFFFFF;
+  --primary-red: #C0392B;
+  --deep-red: #96281B;
+  --text-dark: #1A1209;
+  --text-muted: #7a6050;
+  --border-color: #EDE5D8;
+  --warm-beige: #F5EDE0;
+  --gold-accent: #D4AA57;
+  --color-crimson: #C0392B;
+  --color-crimson-dark: #96281B;
+  --color-cream: #F8F3EC;
+  --color-cream-dark: #EDE5D8;
+  --color-ink: #1A1209;
+}
+
+body {
+  margin: 0;
+  font-family: 'Lora', 'Inter', system-ui, -apple-system, sans-serif;
+  background-color: var(--bg-color);
+  color: var(--text-dark);
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Editorial typography classes */
+.font-editorial-serif {
+  font-family: 'Lora', 'Cormorant Garamond', Georgia, serif;
+}
+
+.font-editorial-heading {
+  font-family: 'Lobster Two', 'Cinzel', cursive, serif;
+  letter-spacing: -0.01em;
+}
+
+.font-bodoni {
+  font-family: 'Libre Bodoni', serif;
+}
+
+/* Custom scrollbars */
+* {
+  scrollbar-width: none;
+}
+*::-webkit-scrollbar {
+  display: none;
+}
+
+/* ── DISTINCT CULTURAL & HERITAGE BACKGROUND PATTERNS ── */
+
+/* 1. Parchment & Ancient Corridor (Explore / Onboarding) */
+.bg-heritage-pattern {
+  background-color: #F5EDE0;
+  background-image: 
+    radial-gradient(circle, rgba(192,57,43,0.065) 1.5px, transparent 1.5px),
+    url("https://images.unsplash.com/photo-1706790608211-4c03fd4f4d33?w=1400&auto=format&fit=crop");
+  background-size: 24px 24px, cover;
+  background-blend-mode: normal, multiply;
+}
+
+/* 2. Night Temple Shrine (AI Guide View) */
+.bg-mandala-dark {
+  background-color: #0D0804;
+  background-image: radial-gradient(circle at 70% 30%, rgba(192,57,43,0.18) 0%, transparent 60%);
+}
+
+/* 3. Terracotta / Sindoor Courtyard Grid (Community View) */
+.bg-terracotta-pattern {
+  background-color: #4A0E00;
+  background-image: 
+    radial-gradient(circle, rgba(251,146,60,0.13) 2px, transparent 2px),
+    radial-gradient(circle, rgba(234,179,8,0.07) 1px, transparent 1px);
+  background-size: 28px 28px, 14px 14px;
+  background-position: 0 0, 14px 14px;
+}
+
+/* 4. Turmeric / Haldi Parchment Cartography (Discovery Map View) */
+.bg-turmeric-pattern {
+  background-color: #FDF0D5;
+  background-image: radial-gradient(circle, rgba(180,83,9,0.07) 1.5px, transparent 1.5px);
+  background-size: 22px 22px;
+}
+
+/* 5. Artisan Teak Wood & Corkboard Wall (Cultural Mosaic View) */
+.bg-teak-pattern {
+  background-color: #2C1A0E;
+  background-image: 
+    repeating-linear-gradient(0deg, rgba(255,255,255,0.018) 0px, rgba(255,255,255,0.018) 1px, transparent 1px, transparent 28px),
+    repeating-linear-gradient(90deg, rgba(255,255,255,0.018) 0px, rgba(255,255,255,0.018) 1px, transparent 1px, transparent 28px),
+    radial-gradient(ellipse 80% 60% at 50% 50%, rgba(180,100,20,0.18) 0%, transparent 70%);
+}
+
+/* Glassmorphism restrained */
+.glass-panel {
+  background: rgba(245, 237, 224, 0.88);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(192, 57, 43, 0.15);
+  box-shadow: 0 4px 24px rgba(26, 18, 9, 0.12), 0 1px 4px rgba(192, 57, 43, 0.08);
+}
+
+.glass-panel-dark {
+  background: rgba(13, 8, 4, 0.85);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(212, 170, 90, 0.2);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.5);
+}
+
+/* Keyframe animations from frontend */
+@keyframes spin-slow {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes spin-rev {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(-360deg); }
+}
+
+@keyframes pulse-ring {
+  0%, 100% { transform: scale(1); opacity: 0.6; }
+  50% { transform: scale(1.11); opacity: 0.18; }
+}
+
+@keyframes glow-breathe {
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 1; }
+}
+
+@keyframes bar-pulse {
+  0% { transform: scaleY(0.5); opacity: 0.55; }
+  100% { transform: scaleY(1); opacity: 1; }
+}
+
+@keyframes msg-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes dot-bounce {
+  0%, 60%, 100% { transform: translateY(0); opacity: 0.4; }
+  30% { transform: translateY(-5px); opacity: 1; }
+}
+
+@keyframes float-badge {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-4px); }
+}
+
+@keyframes floatUp {
+  from { opacity: 0; transform: translateY(16px) scale(0.92); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* Leaflet map custom styling */
+.leaflet-container {
+  font-family: 'Lora', sans-serif !important;
+  background-color: #FDF0D5 !important;
+}
+
+.leaflet-popup-content-wrapper {
+  background: #FFFFFF !important;
+  border-radius: 14px !important;
+  padding: 4px !important;
+  box-shadow: 0 8px 32px rgba(26, 18, 9, 0.18) !important;
+  border: 1px solid rgba(192, 57, 43, 0.15) !important;
+}
+
+.leaflet-popup-tip {
+  background: #FFFFFF !important;
+}
+
+/* Image zoom effect on hover */
+.card-image-zoom {
+  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.group:hover .card-image-zoom {
+  transform: scale(1.04);
+}
