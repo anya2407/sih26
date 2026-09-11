@@ -54,11 +54,11 @@ export const Sidebar = () => {
         <div className="p-6 border-b border-heritage-border/60">
           <div className="flex items-center gap-3 cursor-pointer" onClick={() => handleNavClick('explore')}>
             <div className="w-10 h-10 rounded-xl bg-heritage-red text-white flex items-center justify-center font-editorial-heading text-xl font-bold shadow-subtle">
-              वि
+              स्मृ
             </div>
             <div>
               <h1 className="font-editorial-heading font-bold text-xl tracking-wider text-heritage-textDark leading-none">
-                VIRASAT
+                Smriti
               </h1>
               <p className="text-[10px] uppercase tracking-widest text-heritage-textMuted font-medium mt-1">
                 Heritage Intelligence

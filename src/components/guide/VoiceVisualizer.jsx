@@ -49,7 +49,7 @@ export const VoiceVisualizer = ({
           ) : state === 'listening' ? (
             <div className="flex flex-col items-center">
               <span className="w-4 h-4 rounded-full bg-white animate-ping mb-1" />
-              <span className="text-[10px] font-bold uppercase tracking-wider text-white">Listening</span>
+              <span className="text-[9px] font-bold uppercase tracking-wider text-white">Understanding</span>
             </div>
           ) : state === 'thinking' ? (
             <div className="flex flex-col items-center">

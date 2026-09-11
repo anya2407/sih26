@@ -41,11 +41,11 @@ export const LocationOnboarding = () => {
       <header className="relative z-10 px-6 md:px-12 py-6 flex items-center justify-between border-b border-heritage-border/50">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-xl bg-heritage-red text-white flex items-center justify-center font-editorial-heading text-xl font-bold shadow-card">
-            वि
+            स्मृ
           </div>
           <div>
             <span className="font-editorial-heading font-bold text-xl tracking-widest text-heritage-textDark">
-              VIRASAT
+              SMRITI
             </span>
             <span className="block text-[9px] uppercase tracking-widest text-heritage-textMuted font-medium">
               National Cultural AI Platform · SIH 2026
@@ -206,7 +206,7 @@ export const LocationOnboarding = () => {
 
       {/* Editorial Footer */}
       <footer className="relative z-10 px-6 md:px-12 py-6 border-t border-heritage-border/50 flex flex-col sm:flex-row items-center justify-between text-xs text-heritage-textMuted gap-2">
-        <p>© 2026 Virasat Cultural Intelligence Platform · Built for Smart India Hackathon</p>
+        <p>© 2026 Smriti Cultural Intelligence Platform · Built for Smart India Hackathon</p>
         <p className="flex items-center gap-2 font-medium">
           <span>AI-Powered Location Guide</span>
           <span>•</span>
