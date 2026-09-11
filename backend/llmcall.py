@@ -38,6 +38,7 @@ def get_heritage_guide(area: str,description:str) -> str:
     - Do not bold or decorate any word in your response. Return plain text only.
     - Do not use past tense, use present tense to refer to the past as if you're in the past only.
     - Give the response in everyday spoken hindi, try not to use complex words.
+    - Make it so it takes 25 seconds to speak.
 
     Return ONLY the explanation that should be spoken to the visitor.
 """
