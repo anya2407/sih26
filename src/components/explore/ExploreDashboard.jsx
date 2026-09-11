@@ -9,10 +9,7 @@ import { CultureCard } from './CultureCard';
 import { EventCard } from './EventCard';
 import { 
   MapPin, 
-  Sparkles, 
   ArrowRight, 
-  Headphones, 
-  Compass, 
   Search
 } from 'lucide-react';
 import { Badge } from '../common/Badge';
@@ -23,8 +20,6 @@ export const ExploreDashboard = () => {
     currentMonument,
     locationState,
     setActiveTab, 
-    triggerGuideMe, 
-    openMonumentDetail,
     setIsSearchModalOpen
   } = useHeritage();
 
@@ -125,39 +120,9 @@ export const ExploreDashboard = () => {
                 🎨 <strong className="font-semibold">{dynamicCulture.length}</strong> Living Crafts
               </span>
               <span className="px-3 py-1.5 bg-heritage-bg rounded-xl border border-heritage-border flex items-center gap-1.5">
-                📜 <strong className="font-semibold">{dynamicStories.length}</strong> Oral Traditions
+                📜 <strong className="font-semibold">{dynamicStories.length}</strong> Folklore
               </span>
             </div>
-          </div>
-
-          {/* Quick AI Voice Guide Callout Card */}
-          <div className="bg-heritage-bg p-5 rounded-2xl border border-heritage-border/90 flex flex-col justify-between max-w-sm flex-shrink-0">
-            <div>
-              <div className="flex items-center justify-between mb-2">
-                <span className="text-[10px] font-bold uppercase tracking-wider text-heritage-red flex items-center gap-1">
-                  <Sparkles className="w-3 h-3 text-heritage-red" />
-                  AI Heritage Companion
-                </span>
-                <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-              </div>
-              <h4 className="font-editorial-heading font-bold text-base text-heritage-textDark">
-                Ready to explore with voice?
-              </h4>
-              <p className="text-xs text-heritage-textMuted mt-1 leading-relaxed">
-                Stand near any spot at {detectedMonumentName} and listen to location-aware historical narration in real time.
-              </p>
-            </div>
-
-            <button
-              onClick={() => {
-                setActiveTab('guide');
-                triggerGuideMe();
-              }}
-              className="mt-4 w-full py-2.5 px-4 bg-heritage-red hover:bg-heritage-deepRed text-white text-xs font-semibold rounded-xl shadow-subtle flex items-center justify-center gap-2 transition-all"
-            >
-              <Headphones className="w-3.5 h-3.5" />
-              <span>Guide Me at {detectedMonumentName}</span>
-            </button>
           </div>
         </div>
       </section>
@@ -258,7 +223,7 @@ export const ExploreDashboard = () => {
                   <div className="flex items-center gap-2">
                     <span className="text-sm">{story.typeIcon}</span>
                     <Badge variant={story.type === 'Verified Historical Record' ? 'emerald' : 'default'} size="xs">
-                      {story.type}
+                      {story.type === 'Folklore / Oral Tradition' ? 'Folklore' : story.type}
                     </Badge>
                   </div>
                   <span className="text-[11px] text-heritage-textMuted">{story.date}</span>

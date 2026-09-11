@@ -89,15 +89,13 @@ export const GlobalSearchModal = () => {
             className="w-full bg-transparent text-heritage-textDark placeholder-heritage-textMuted text-sm font-medium focus:outline-none"
             autoFocus
           />
-          {query ? (
-            <button onClick={() => setQuery('')} className="p-1 text-heritage-textMuted hover:text-heritage-textDark">
-              <X className="w-4 h-4" />
-            </button>
-          ) : (
-            <kbd className="text-[10px] bg-white px-2 py-0.5 rounded border border-heritage-border text-heritage-textMuted font-mono">
-              ESC
-            </kbd>
-          )}
+          <button
+            onClick={() => setIsSearchModalOpen(false)}
+            className="p-1.5 rounded-lg text-heritage-textMuted hover:text-heritage-textDark hover:bg-white focus:outline-none focus-visible:ring-2 focus-visible:ring-heritage-red"
+            aria-label="Close search"
+          >
+            <X className="w-5 h-5" />
+          </button>
         </div>
 
         {/* Results Container */}
@@ -230,7 +228,6 @@ export const GlobalSearchModal = () => {
         {/* Footer */}
         <div className="px-4 py-2.5 bg-heritage-bg border-t border-heritage-border flex items-center justify-between text-[11px] text-heritage-textMuted">
           <span>Search the comprehensive Indian cultural intelligence registry</span>
-          <span>Press ESC to exit</span>
         </div>
       </div>
     </div>

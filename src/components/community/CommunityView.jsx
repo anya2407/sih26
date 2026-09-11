@@ -7,13 +7,8 @@ import {
   ArrowBigUp, 
   ArrowBigDown,
   Share2, 
-  Play, 
-  Pause, 
   Plus, 
   Sparkles, 
-  ShieldCheck, 
-  Filter,
-  Volume2
 } from 'lucide-react';
 import { Badge } from '../common/Badge';
 
@@ -31,14 +26,12 @@ export const CommunityView = () => {
   const [stories, setStories] = useState(MOCK_STORIES);
   const [selectedFilter, setSelectedFilter] = useState('All');
   const [isCreateStoryOpen, setIsCreateStoryOpen] = useState(false);
-  const [playingAudioStoryId, setPlayingAudioStoryId] = useState(null);
 
   const filterOptions = [
     'All',
     'Verified Historical Record',
     'Folklore / Oral Tradition',
     'Local Knowledge',
-    'Oral Audio Recording',
     'Historical Photograph'
   ];
 
@@ -52,24 +45,6 @@ export const CommunityView = () => {
         - (downvotedStoryIds.includes(story.id) ? 1 : 0);
       return score(b) - score(a);
     });
-
-  const handleToggleAudio = (storyId) => {
-    if (playingAudioStoryId === storyId) {
-      setPlayingAudioStoryId(null);
-      if ('speechSynthesis' in window) window.speechSynthesis.cancel();
-      showToast('Audio playback paused', 'info');
-    } else {
-      setPlayingAudioStoryId(storyId);
-      const story = stories.find(s => s.id === storyId);
-      if ('speechSynthesis' in window && story) {
-        window.speechSynthesis.cancel();
-        const utterance = new SpeechSynthesisUtterance(story.content);
-        utterance.rate = 0.9;
-        window.speechSynthesis.speak(utterance);
-      }
-      showToast('Playing community oral recording narration', 'success');
-    }
-  };
 
   const handleShareStory = (story) => {
     if (navigator.clipboard) {
@@ -137,7 +112,6 @@ export const CommunityView = () => {
           const isSaved = savedStoryIds.includes(story.id);
           const isUpvoted = upvotedStoryIds.includes(story.id);
           const isDownvoted = downvotedStoryIds.includes(story.id);
-          const isAudioPlaying = playingAudioStoryId === story.id;
           const voteScore = story.upvotes + (isUpvoted ? 1 : 0) - (isDownvoted ? 1 : 0);
 
           return (
@@ -202,29 +176,6 @@ export const CommunityView = () => {
                     alt={story.title}
                     className="w-full h-full object-cover"
                   />
-                </div>
-              )}
-
-              {/* Oral Audio Snippet Player if applicable */}
-              {story.hasAudio && (
-                <div className="p-4 bg-indigo-50/70 rounded-2xl border border-indigo-200 flex items-center justify-between gap-4">
-                  <div className="flex items-center gap-3">
-                    <button
-                      onClick={() => handleToggleAudio(story.id)}
-                      className="w-10 h-10 rounded-full bg-indigo-900 text-white flex items-center justify-center shadow-subtle hover:bg-indigo-800 transition-colors flex-shrink-0"
-                    >
-                      {isAudioPlaying ? (
-                        <Pause className="w-4 h-4" />
-                      ) : (
-                        <Play className="w-4 h-4 ml-0.5" />
-                      )}
-                    </button>
-                    <div>
-                      <p className="font-bold text-xs text-indigo-950">{story.audioTitle}</p>
-                      <p className="text-[10px] text-indigo-700">Archival Audio Recording · {story.audioDuration}</p>
-                    </div>
-                  </div>
-                  <Volume2 className={`w-5 h-5 text-indigo-800 ${isAudioPlaying ? 'animate-bounce' : ''}`} />
                 </div>
               )}
 

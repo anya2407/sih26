@@ -18,8 +18,7 @@ export const CreateStoryModal = ({ isOpen, onClose, onStoryCreated }) => {
     { label: 'Folklore / Oral Tradition', icon: '📜', desc: 'Mythos, legends & oral stories (not verified fact)' },
     { label: 'Verified Historical Record', icon: '🟢', desc: 'Corroborated by archaeological or state archives' },
     { label: 'Personal Story', icon: '📖', desc: 'Family memories, nostalgic childhood travels' },
-    { label: 'Historical Photograph', icon: '📷', desc: 'Archival images and visual documentation' },
-    { label: 'Oral Audio Recording', icon: '🎙️', desc: 'Audio recording of local dialects or music' }
+    { label: 'Historical Photograph', icon: '📷', desc: 'Archival images and visual documentation' }
   ];
 
   const handleSubmit = (e) => {
@@ -43,7 +42,7 @@ export const CreateStoryModal = ({ isOpen, onClose, onStoryCreated }) => {
       typeIcon: storyTypes.find(t => t.label === type)?.icon || '📜',
       typeDescription: storyTypes.find(t => t.label === type)?.desc || 'Community contribution',
       content: content.trim(),
-      image: 'https://images.unsplash.com/photo-1599661046289-e31897846e41?auto=format&fit=crop&w=1200&q=80',
+      image: 'https://images.unsplash.com/photo-1617627143750-d86bc21e42bb?auto=format&fit=crop&w=1200&q=80',
       upvotes: 1,
       savedCount: 1
     };

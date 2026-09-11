@@ -1,12 +1,11 @@
 import React from 'react';
 import { useHeritage } from '../../context/HeritageContext';
-import { Bookmark, Headphones, MapPin, ArrowUpRight, Sparkles } from 'lucide-react';
+import { Bookmark, MapPin, Sparkles } from 'lucide-react';
 import { Badge } from '../common/Badge';
 
 export const HeritageCard = ({ monument, isFeatured = false }) => {
   const { 
     openMonumentDetail, 
-    startAudioGuide, 
     savedHeritageIds, 
     toggleSaveHeritage 
   } = useHeritage();
@@ -15,11 +14,6 @@ export const HeritageCard = ({ monument, isFeatured = false }) => {
 
   const handleCardClick = () => {
     openMonumentDetail(monument.id);
-  };
-
-  const handleAudioGuideClick = (e) => {
-    e.stopPropagation();
-    startAudioGuide(monument.id);
   };
 
   const handleSaveClick = (e) => {
@@ -90,31 +84,6 @@ export const HeritageCard = ({ monument, isFeatured = false }) => {
               {monument.overview}
             </p>
 
-            <div className="mt-4 p-3 bg-heritage-bg rounded-xl border border-heritage-border/70 text-xs">
-              <p className="font-semibold text-heritage-textDark">Key Architectural Wonder:</p>
-              <p className="text-heritage-textMuted mt-0.5 line-clamp-2">
-                {monument.architectureDetails.notableFeatures[0]}
-              </p>
-            </div>
-          </div>
-
-          {/* Action CTAs */}
-          <div className="mt-6 flex items-center gap-3">
-            <button
-              onClick={handleAudioGuideClick}
-              className="flex-1 py-3 px-4 bg-heritage-red hover:bg-heritage-deepRed text-white font-semibold text-xs rounded-xl shadow-subtle flex items-center justify-center gap-2 transition-all group/btn"
-            >
-              <Headphones className="w-4 h-4" />
-              <span>Start AI Voice Guide</span>
-            </button>
-            
-            <button
-              onClick={handleCardClick}
-              className="py-3 px-4 bg-heritage-bg hover:bg-heritage-beige text-heritage-textDark font-semibold text-xs rounded-xl border border-heritage-border flex items-center gap-1.5 transition-all"
-            >
-              <span>Explore Details</span>
-              <ArrowUpRight className="w-4 h-4" />
-            </button>
           </div>
         </div>
       </div>
@@ -187,20 +156,6 @@ export const HeritageCard = ({ monument, isFeatured = false }) => {
           </p>
         </div>
 
-        {/* Bottom Action Footer */}
-        <div className="mt-4 pt-3 border-t border-heritage-border/70 flex items-center justify-between">
-          <button
-            onClick={handleAudioGuideClick}
-            className="flex items-center gap-1.5 text-xs font-semibold text-heritage-red hover:text-heritage-deepRed group-hover:underline"
-          >
-            <Headphones className="w-3.5 h-3.5" />
-            <span>AI Voice Guide</span>
-          </button>
-
-          <span className="text-xs text-heritage-textMuted group-hover:text-heritage-textDark flex items-center gap-0.5 font-medium">
-            Explore <ArrowUpRight className="w-3.5 h-3.5" />
-          </span>
-        </div>
       </div>
     </div>
   );
